@@ -1,12 +1,12 @@
-import PyPDF2
+from PyPDF2 import PdfReader, PdfWriter
 
-def merge_pdfs(lista_pdf, pdf_final):
+def merge_pdfs(pdfs, pdf_final):
 
-    pdf_escritor = PyPDF2.PdfWriter()
+    pdf_escritor = PdfWriter()
 
-    for pdf in lista_pdf:
+    for pdf in pdfs:
         with open(pdf, 'rb') as arq:
-            pdf_leitor = PyPDF2.PdfReader(arq)
+            pdf_leitor = PdfReader(arq)
 
             for pg_num in range(len(pdf_leitor.pages)):
                 pagina = pdf_leitor.pages[pg_num]
