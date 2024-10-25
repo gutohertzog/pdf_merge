@@ -2,25 +2,41 @@
 
 IDIOMAS = {
     'pt-br': {
+        'acronym': 'Português (Brasil)',
         'titulo-janela': 'Juntador PDFs',
         'opcoes': 'Opções',
+        'language': 'Idioma',
         'sair': 'Sair',
         'titulo': 'Bem-vindo ao Juntador de PDFs',
         'merge': 'Juntar',
         'load': 'Carregar',
         'remove': 'Remover',
         'clear': 'Limpar',
+        'select': 'Selecione o Arquivo',
+        'warning': 'Aviso',
+        'two-or-more': 'Escolha dois ou mais PDFs',
+        'success': 'Sucesso',
+        'success_msg': 'PDF juntado como :',
+        'error': 'Erro',
+        'error_msg': 'Não escolha um nome de PDF já existente',
     },
     'en-us': {
+        'acronym': 'English (USA)',
         'titulo-janela': 'PDFs Merger',
         'opcoes': 'Options',
+        'language': 'Language',
         'sair': 'Exit',
-        'titulo': 'Welcome to PDFs Merger',
+        'titulo': 'Welcome to the PDFs Merger',
         'merge': 'Merge',
         'load': 'Load',
         'remove': 'Remove',
         'clear': 'Clear',
+        'select': 'Select file',
+        'warning': 'Warning',
+        'two-or-more': 'Select two or more PDFs',
+        'success': 'Success',
+        'success_msg': 'PDF merged as :',
+        'error': 'Error',
+        'error_msg': 'Do not choose an existing PDF name',
     }
 }
-
-
