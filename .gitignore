@@ -1,3 +1,11 @@
+# ambiente virtual
 .venv/
+
+# cache do Python
 __pycache__/
+
+# arquivos e pastas do pyinstaller
+build/
+dist/
+*.spec
 
