@@ -8,6 +8,7 @@ Repositório para guardar o programa em Tkinter que vai juntar dois ou mais arqu
 Pacotes externos :
 - [PyPDF2](https://pypi.org/project/PyPDF2/) para realizar a fusão dos arquivos;
 - [pyinstaller](https://pypi.org/project/pyinstaller/) para criar o executável;
+- Pillow para exibir as imagens;
 
 ## preparação
 
@@ -28,4 +29,5 @@ pdf-merge❯ python main.py
 ## todo
 
 - [ ] adicionar remoção individual do frame (atualmente funciona com FILO);
-
+- [ ] arrumar o tema das janelas (está apenas no widgets);
+- [ ] adicionar mais idiomas (italiano e alemão);
