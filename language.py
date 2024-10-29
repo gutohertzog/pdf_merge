@@ -1,42 +1,64 @@
-""" módulo para guardar as opções de idiomas """
+""" módulo com a classe para guardar as opções de idiomas """
 
-IDIOMAS = {
-    'pt-br': {
-        'acronym': 'Português (Brasil)',
-        'titulo-janela': 'Juntador PDFs',
-        'opcoes': 'Opções',
-        'language': 'Idioma',
-        'sair': 'Sair',
-        'titulo': 'Bem-vindo ao Juntador de PDFs',
-        'merge': 'Juntar',
-        'load': 'Carregar',
-        'remove': 'Remover',
-        'clear': 'Limpar',
-        'select': 'Selecione o Arquivo',
-        'warning': 'Aviso',
-        'two-or-more': 'Escolha dois ou mais PDFs',
-        'success': 'Sucesso',
-        'success_msg': 'PDF juntado como :',
-        'error': 'Erro',
-        'error_msg': 'Não escolha um nome de PDF já existente',
-    },
-    'en-us': {
-        'acronym': 'English (USA)',
-        'titulo-janela': 'PDFs Merger',
-        'opcoes': 'Options',
-        'language': 'Language',
-        'sair': 'Exit',
-        'titulo': 'Welcome to the PDFs Merger',
-        'merge': 'Merge',
-        'load': 'Load',
-        'remove': 'Remove',
-        'clear': 'Clear',
-        'select': 'Select file',
-        'warning': 'Warning',
-        'two-or-more': 'Select two or more PDFs',
-        'success': 'Success',
-        'success_msg': 'PDF merged as :',
-        'error': 'Error',
-        'error_msg': 'Do not choose an existing PDF name',
+class IdiomaAplicativo:
+    textos: dict[str, dict[str, str]] = {
+        'pt-br': {
+            'clear': 'Limpar',
+            'error': 'Erro',
+            'lang_en_us': 'Inglês (EUA)',
+            'lang_pt_br': 'Português (Brasil)',
+            'error-msg': '',
+            'language': 'Idioma',
+            'load': 'Carregar',
+            'merge': 'Juntar',
+            'no-name': 'Digite um nome válido para o novo PDF',
+            'options': 'Opções',
+            'remove': 'Remover',
+            'exit': 'Sair',
+            'select': 'Selecione o Arquivo',
+            'success': 'Sucesso',
+            'success-msg': 'PDF juntado como :\n',
+            'title': 'Bem-vindo ao Juntador de PDFs',
+            'title-window': 'Juntador PDFs',
+            'two-or-more': 'Escolha dois ou mais PDFs',
+            'warning': 'Aviso',
+            'wrong-name': 'Não escolha um arquivo PDF de origem como destino',
+        },
+        'en-us': {
+            'clear': 'Clear',
+            'error': 'Error',
+            'lang_en_us': 'English (USA)',
+            'lang_pt_br': 'Portuguese (Brazil)',
+            'language': 'Language',
+            'load': 'Load',
+            'merge': 'Merge',
+            'no-nome': 'Enter a valid name for the new PDF',
+            'options': 'Options',
+            'remove': 'Remove',
+            'exit': 'Exit',
+            'select': 'Select file',
+            'success': 'Success',
+            'success-msg': 'PDF merged as :\n',
+            'title': 'Welcome to the PDFs Merger',
+            'title-window': 'PDFs Merger',
+            'two-or-more': 'Select two or more PDFs',
+            'warning': 'Warning',
+            'wrong-name': 'Do not select a source PDF file as the destination',
+        }
     }
-}
+
+    def __init__(self, idioma:str='pt-br'):
+        """ define o idioma padão """
+        self.idioma:str = idioma
+
+    def pega_texto(self, chave:str):
+        return self.textos[self.idioma].get(chave, '')
+
+    def define_texto(self, idioma):
+        self.idioma = idioma
+        self.atualiza_interface()
+
+    def atualiza_interface(self):
+        """ método a ser implementado pela classe filha para atualizar idioma
+        da interface """
+        pass

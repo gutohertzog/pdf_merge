@@ -3,71 +3,91 @@
 from tkinter import Menu, Tk
 from tkinter import BOTTOM, LEFT
 from tkinter.filedialog import askopenfilename, asksaveasfile
-from tkinter.messagebox import showerror, showinfo, showwarning
+from tkinter.messagebox import showinfo, showwarning
 from tkinter.ttk import Button, Entry, Frame, Label
-from PyPDF2 import PdfReader, PdfWriter, errors
-from language import IDIOMAS
+from PyPDF2 import PdfReader, PdfWriter
+from language import IdiomaAplicativo
 
-class Aplicativo(Tk):
+class Aplicativo(Tk, IdiomaAplicativo):
     """ classe do aplicativo principal """
 
-    def __init__(self):
-        super().__init__()
-        self.idioma = IDIOMAS['pt-br']
-        self.frames = []
-        self.pdfs = []
-        self.tipo_arq = [("Arquivos PDF", "*.pdf")]
+    def __init__(self, idioma='pt-br'):
+        Tk.__init__(self)
+        IdiomaAplicativo.__init__(self, idioma)
+
+        self.frames:list = []
+        self.pdfs:list = []
+        self.tipo_arq:list = [("Arquivos PDF", "*.pdf")]
+        self.nome_novo_pdf:str = ''
+
+        # cria a interface
+        self.configura_aplicativo()
+        self.cria_widgets()
+        self.cria_menu()
+
+        # atualiza o idioma da interface
+        self.atualiza_interface()
 
     # métodos de criação da UI
-    def conf_app(self):
+    def configura_aplicativo(self):
         """ método com as configurações da janela """
-        self.title(self.idioma['titulo-janela'])
-        self.minsize(480, 640)
+        self.geometry('480x360')
+        self.iconbitmap('assets/ufrgs.ico')
+        self.maxsize(480, 640)
+        self.minsize(480, 360)
 
-    def menu(self):
+    def cria_menu(self):
         """ método com a configuração do menu superior """
-        main_menu = Menu(self)
-        self.config(menu=main_menu)
+        self.barra_menu = Menu(self)
+        self.menu_opcoes = Menu(self.barra_menu, tearoff=0)
+        self.menu_idioma = Menu(self.menu_opcoes, tearoff=0)
 
-        menu_opcoes = Menu(main_menu, tearoff=0)
-        main_menu.add_cascade(menu=menu_opcoes, label=self.idioma['opcoes'])
+        self.barra_menu.add_cascade(menu=self.menu_opcoes)
 
-        menu_opcoes.add_command(label=self.idioma['sair'], command=self.quit)
+        self.menu_opcoes.add_cascade(menu=self.menu_idioma)
+        self.menu_opcoes.add_command(command=self.quit)
 
-        menu_idioma = Menu(menu_opcoes, tearoff=0)
-        menu_opcoes.add_cascade(menu=menu_idioma, label=self.idioma['language'])
+        self.menu_idioma.add_command(command=lambda: self.define_texto('pt-br'))
+        self.menu_idioma.add_command(command=lambda: self.define_texto('en-us'))
 
-        for chave, valor in IDIOMAS.items():
-            menu_idioma.add_radiobutton(
-                label=valor['acronym'],
-                variable=self.idioma,
-                value=chave,
-                command=self.troca_idioma)
+        self.config(menu=self.barra_menu)
 
-    def titulo(self):
-        """ define a etiqueta de título """
-        lbl_titulo = Label(self, text=self.idioma['titulo'])
-        lbl_titulo.pack()
+    def cria_widgets(self):
+        """ cria todos os widgets padrão do aplicativo """
+        self.lbl_titulo = Label(self)
+        self.lbl_titulo.pack()
 
-    def botao_juntar(self):
-        """ define o botão de juntar os PDFs """
-        btn_juntar = Button(
-            self, text=self.idioma['merge'], command=self.merge_pdfs)
-        btn_juntar.pack(side=BOTTOM)
+        self.btn_juntar = Button(self, command=self.merge_pdfs)
+        self.btn_juntar.pack(side=BOTTOM)
 
-    def frame_botoes(self):
-        """ define o frame para colocar os 3 botões de ação """
         frm_botoes = Frame(self)
-        btn_novo_pdf = Button(
-            frm_botoes, text=self.idioma['load'], command=self.cria_frame)
-        btn_novo_pdf.pack(side=LEFT)
-        btn_remove_pdf = Button(
-            frm_botoes, text=self.idioma['remove'], command=self.apaga_frame)
-        btn_remove_pdf.pack(side=LEFT)
-        btn_limpar = Button(
-            frm_botoes, text=self.idioma['clear'], command=self.limpar_pdfs)
-        btn_limpar.pack(side=LEFT)
+        self.btn_novo_pdf = Button(frm_botoes, command=self.cria_frame)
+        self.btn_novo_pdf.pack(side=LEFT)
+        self.btn_remove_pdf = Button(frm_botoes, command=self.apaga_frame)
+        self.btn_remove_pdf.pack(side=LEFT)
+        self.btn_limpar = Button(frm_botoes, command=self.limpar_pdfs)
+        self.btn_limpar.pack(side=LEFT)
         frm_botoes.pack()
+
+    def atualiza_interface(self):
+        """ método usado para criar os textos com base no idioma escolhido """
+        self.title(self.pega_texto('title-window'))
+
+        # atualiza os widgets
+        self.lbl_titulo['text'] = self.pega_texto('title')
+        self.btn_juntar['text'] = self.pega_texto('merge')
+        self.btn_novo_pdf['text'] = self.pega_texto('load')
+        self.btn_remove_pdf['text'] = self.pega_texto('remove')
+        self.btn_limpar['text'] = self.pega_texto('clear')
+
+        # atualiza os menus
+        self.barra_menu.entryconfig(1, label=self.pega_texto('options'))
+
+        self.menu_opcoes.entryconfig(0, label=self.pega_texto('language'))
+        self.menu_opcoes.entryconfig(1, label=self.pega_texto('exit'))
+
+        self.menu_idioma.entryconfig(0, label=self.pega_texto('lang_pt_br'))
+        self.menu_idioma.entryconfig(1, label=self.pega_texto('lang_en_us'))
 
     # métodos de ação
     def apaga_frame(self):
@@ -89,7 +109,7 @@ class Aplicativo(Tk):
     def cria_frame(self):
         """ abre a janela para carregar novo PDF e adciona o frame """
         arq_path = askopenfilename(
-                title=self.idioma['select'],
+                title=self.pega_texto('select'),
                 filetypes=self.tipo_arq)
 
         if arq_path:
@@ -103,45 +123,56 @@ class Aplicativo(Tk):
 
             self.frames.append(frm_novo)
 
-    def troca_idioma(self):
-        """ método para trocar o idioma do aplicativo """
-        self.update()
+    def escolhe_como_salvar(self):
+        """ método para pegar o nome do novo PDF, testar se foi inserido
+        a extensão .pdf nele; insere caso não exista
+
+        o arquivo é aberto como leitura, pois apenas o seu caminho e nome são
+        necessários, o 'mode' original é como escrita e isso apaga o arquivo
+        de origem, caso tenha sido escolhido para ser também o destino, isso
+        ajuda a evitar o EmptyFileError levantado
+        """
+        novo_pdf = asksaveasfile(mode='r', filetypes=self.tipo_arq)
+
+        # nenhum nome foi escolhido para salvar
+        # (janela fechada com Cancel ou no X)
+        if not novo_pdf:
+            self.nome_novo_pdf = ''
+            return
+
+        self.nome_novo_pdf = novo_pdf.name
+
+        # adiciona a extensão .pdf caso ainda não tenha
+        if '.pdf' != self.nome_novo_pdf[-4:]:
+            self.nome_novo_pdf += '.pdf'
 
     def merge_pdfs(self):
         """ método para realizar a fusão """
         if len(self.pdfs) < 2:
-            showwarning(self.idioma['warning'], self.idioma['two-or-more'])
+            showwarning(self.pega_texto('warning'), self.pega_texto('two-or-more'))
+            return
+
+        self.escolhe_como_salvar()
+        if not self.nome_novo_pdf:
+            showwarning(self.pega_texto('warning'), self.pega_texto('no-name'))
             return
 
         pdf_escritor = PdfWriter()
-        pdf_final = asksaveasfile(filetypes=self.tipo_arq)
-
         for pdf in self.pdfs:
             with open(pdf, 'rb') as arq:
-                try:
-                    print(f'{pdf = }')
-                    pdf_leitor = PdfReader(arq)
-                except errors.EmptyFileError as erro:
-                    showerror(self.idioma['error'], self.idioma['error_msg'])
-                    print(f'{erro = }')
-                    return
+                pdf_leitor = PdfReader(arq)
 
                 for pagina in pdf_leitor.pages:
                     pdf_escritor.add_page(pagina)
 
-        with open(pdf_final.name, 'wb') as arq:
+        with open(self.nome_novo_pdf, 'wb') as arq:
             pdf_escritor.write(arq)
 
-        nome = pdf_final.name.split('/')
+        nome = self.nome_novo_pdf.split('/')
         showinfo(
-            self.idioma['success'],
-            self.idioma['success_msg'] + nome[-1])
+            self.pega_texto('success'),
+            self.pega_texto('success-msg') + nome[-1])
 
 if __name__ == '__main__':
     app = Aplicativo()
-    app.conf_app()
-    app.menu()
-    app.titulo()
-    app.frame_botoes()
-    app.botao_juntar()
     app.mainloop()
