@@ -16,6 +16,9 @@ from language import IdiomaAplicativo
 class Aplicativo(Tk, IdiomaAplicativo):
     """ classe do aplicativo principal """
 
+    url_univ = 'https://www.ufrgs.br'
+    url_repo = 'https://github.com/gutohertzog/pdf-merge'
+
     def __init__(self, idioma='pt-br'):
         Tk.__init__(self)
         IdiomaAplicativo.__init__(self, idioma)
@@ -23,45 +26,47 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
         self.frames:list = []
         self.pdfs:list = []
-        self.tipo_arq:list = [("Arquivos PDF", "*.pdf")]
+        self.tipo_arq:list = [(self.pega_texto('pdf-files'), "*.pdf")]
         self.nome_novo_pdf:str = ''
+        self.sistema = platform.system()
 
         # cria a interface
         self.configura_aplicativo()
         self.cria_widgets()
         self.cria_menu()
 
-        # atualiza o idioma da interface
+        # define o idioma da interface para o padrão pt-br
         self.atualiza_interface()
 
     # métodos de criação da UI
     def configura_aplicativo(self):
         """ método com as configurações da janela """
         self.geometry('480x360')
-        icone_path = self.caminho_arquivo('ufrgs.ico')
-        self.iconbitmap(icone_path)
+        # linux não lidam bem com ícones no aplicativo
+        if self.sistema == 'Windows':
+            icone_path = self.caminho_arquivo('ufrgs.ico')
+            self.iconbitmap(icone_path)
         self.maxsize(480, 640)
         self.minsize(480, 360)
 
     def definir_tema_automatico(self):
-        """Define um tema padrão com base no sistema operacional."""
-        sistema = platform.system()
+        """ define um tema padrão com base no sistema operacional """
 
-        # Seleciona o tema mais compatível com o sistema operacional
-        if sistema == "Windows":
+        if self.sistema == "Windows":
             tema = 'vista' if 'vista' in self.estilo.theme_names() else 'clam'
-        elif sistema == "Darwin":  # macOS
+        elif self.sistema == "Darwin":
             tema = 'clam'
-        elif sistema == "Linux":
+        elif self.sistema == "Linux":
             tema = 'clam'
         else:
-            tema = 'default'  # Escolha segura para sistemas desconhecidos
+            tema = 'default'
 
         self.estilo.theme_use(tema)
 
     def caminho_arquivo(self, nome_arquivo):
-        """Retorna o caminho do arquivo, compatível com o executável PyInstaller"""
-        # Verifica se está em modo executável
+        """ retorna o caminho do arquivo, compatível com o executável
+        PyInstaller """
+        # verifica se está em modo executável
         if getattr(sys, 'frozen', False):
             base_path = sys._MEIPASS
         else:
@@ -139,11 +144,12 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.menu_opcoes.entryconfig(0, label=self.pega_texto('language'))
         self.menu_opcoes.entryconfig(1, label=self.pega_texto('themes'))
         self.menu_opcoes.entryconfig(2, label=self.pega_texto('exit'))
-
         self.menu_idioma.entryconfig(0, label=self.pega_texto('lang_pt_br'))
         self.menu_idioma.entryconfig(1, label=self.pega_texto('lang_en_us'))
-
         self.menu_ajuda.entryconfig(0, label=self.pega_texto('about'))
+
+        # variáveis
+        self.tipo_arq:list = [(self.pega_texto('pdf-files'), "*.pdf")]
 
     def aplicar_tema(self, tema):
         """ aplica o tema escolhido pelo usuário """
@@ -153,9 +159,8 @@ class Aplicativo(Tk, IdiomaAplicativo):
         """ cria uma nova janela para mostrar os dados do aplicativo """
 
         janela_info = Toplevel(self)
-        janela_info.iconbitmap('assets/ufrgs.ico')
-        janela_info.title("Sobre o Aplicativo")
-        janela_info.geometry("400x300")
+        janela_info.title(self.pega_texto('about-title-window'))
+        janela_info.geometry("400x275")
         janela_info.resizable(False, False)
 
         try:
@@ -167,33 +172,37 @@ class Aplicativo(Tk, IdiomaAplicativo):
             lbl_logo = Label(janela_info, image=logo, cursor="hand2")
             lbl_logo.image = logo
             lbl_logo.pack(pady=10)
-            # Evento de clique para abrir o link da UFRGS
-            lbl_logo.bind("<Button-1>", lambda e: webbrowser.open("https://www.ufrgs.br"))
+            # evento de clique para abrir o link da UFRGS
+            lbl_logo.bind(
+                    "<Button-1>",
+                    lambda e: webbrowser.open(Aplicativo.url_univ))
         except Exception as e:
-            showinfo("Erro", f"Não foi possível carregar o logo: {e}")
+            print(f'Não foi possível carregar o logo: {e}')
 
-        # Informações do criador e repositório
         texto_info = (
-            "Desenvolvedor : Augusto Hertzog\n\n"
-            "Universidade: UFRGS\n\n"
-            "Projeto : Juntador de PDFs\n\n"
-            "https://github.com/gutohertzog/pdf-merge"
+            self.pega_texto('contributor')+
+            "UFRGS\n\n"+
+            Aplicativo.url_repo
         )
-        lbl_info = Label(janela_info, text=texto_info, justify="center", cursor="hand2")
+        lbl_info = Label(
+                janela_info, text=texto_info, justify="center", cursor="hand2")
         lbl_info.pack(pady=10)
 
-        # Evento de clique para abrir o link do repositório no navegador
-        lbl_info.bind("<Button-1>", lambda e: webbrowser.open("https://github.com/gutohertzog/pdf-merge"))
+        # evento de clique para abrir o link do repositório no navegador
+        lbl_info.bind("<Button-1>", lambda e: webbrowser.open(url_repo))
 
-        # Botão para fechar a janela
-        btn_fechar = Button(janela_info, text="Fechar", command=janela_info.destroy)
+        btn_fechar = Button(
+                janela_info,
+                text=self.pega_texto('close'),
+                command=janela_info.destroy)
         btn_fechar.pack(pady=10)
 
         janela_info.wait_window(janela_info)
 
     # métodos de ação
     def apaga_frame(self):
-        """ função para apagar o último frame da pilha; funciona como FILO """
+        """ função para apagar o último frame da pilha;
+        até o momento, funciona como FILO """
         if self.frames:
             para_apagar = self.frames.pop()
             self.pdfs.pop()
@@ -228,14 +237,8 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
     def escolhe_como_salvar(self):
         """ método para pegar o nome do novo PDF, testar se foi inserido
-        a extensão .pdf nele; insere caso não exista
-
-        o arquivo é aberto como leitura, pois apenas o seu caminho e nome são
-        necessários, o 'mode' original é como escrita e isso apaga o arquivo
-        de origem, caso tenha sido escolhido para ser também o destino, isso
-        ajuda a evitar o EmptyFileError levantado
-        """
-        novo_pdf = asksaveasfile(mode='r', filetypes=self.tipo_arq)
+        a extensão .pdf nele; insere caso não exista """
+        novo_pdf = asksaveasfile(filetypes=self.tipo_arq)
 
         # nenhum nome foi escolhido para salvar
         # (janela fechada com Cancel ou no X)
@@ -255,11 +258,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
             showwarning(self.pega_texto('warning'), self.pega_texto('two-or-more'))
             return
 
-        self.escolhe_como_salvar()
-        if not self.nome_novo_pdf:
-            showwarning(self.pega_texto('warning'), self.pega_texto('no-name'))
-            return
-
         pdf_escritor = PdfWriter()
         for pdf in self.pdfs:
             with open(pdf, 'rb') as arq:
@@ -267,6 +265,11 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
                 for pagina in pdf_leitor.pages:
                     pdf_escritor.add_page(pagina)
+
+        self.escolhe_como_salvar()
+        if not self.nome_novo_pdf:
+            showwarning(self.pega_texto('warning'), self.pega_texto('no-name'))
+            return
 
         with open(self.nome_novo_pdf, 'wb') as arq:
             pdf_escritor.write(arq)
@@ -276,6 +279,3 @@ class Aplicativo(Tk, IdiomaAplicativo):
             self.pega_texto('success'),
             self.pega_texto('success-msg') + nome[-1])
 
-if __name__ == '__main__':
-    app = Aplicativo()
-    app.mainloop()

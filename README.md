@@ -26,8 +26,29 @@ Para executar, basta digitar no terminal / prompt de comando :
 pdf-merge❯ python main.py
 ```
 
+## build
+
+Para criar o executável, é preciso executar o `pyinstaller` a partir do Terminal/Prompt de Comando. Isso vai criar um executável que pode ser distribuído.
+
+### Linux
+
+```bash
+pyinstaller --onefile --add-data "assets/cpd-logo.jpg:assets" --hidden-import="PIL._tkinter_finder" --noconsole main.py
+```
+
+### Windows
+
+```bash
+pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg:assets" --add-data "assets/ufrgs.ico:assets" --hidden-import="PIL._tkinter_finder" --noconsole main.py
+```
+
 ## todo
 
 - [ ] adicionar remoção individual do frame (atualmente funciona com FILO);
 - [ ] arrumar o tema das janelas (está apenas no widgets);
 - [ ] adicionar mais idiomas (italiano e alemão);
+
+## versões
+
+- `v1.0.0` : lançada a primeira versão para Windows e Linux;
+
