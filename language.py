@@ -1,5 +1,7 @@
 """ módulo com a classe para guardar as opções de idiomas """
 
+from __init__ import __author__
+
 class IdiomaAplicativo:
     textos: dict[str, dict[str, str]] = {
         'pt-br': {
@@ -7,9 +9,7 @@ class IdiomaAplicativo:
             'about-title-window': 'Sobre o Juntador',
             'clear': 'Limpar',
             'close': 'Fechar',
-            'contributor': 'Um projeto de Augusto Hertzog',
-            'error': 'Erro',
-            'error-msg': '',
+            'contributor': f'Um projeto de {__author__}',
             'exit': 'Sair',
             'help': 'Ajuda',
             'lang_en_us': 'Inglês (EUA)',
@@ -37,8 +37,7 @@ class IdiomaAplicativo:
             'about-title-window': 'About Merger',
             'clear': 'Clear',
             'close': 'Close',
-            'contributor': 'A project by Augusto Hertzog',
-            'error': 'Error',
+            'contributor': f'A project by {__author__}',
             'exit': 'Exit',
             'help': 'Help',
             'lang_en_us': 'English (USA)',

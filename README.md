@@ -1,4 +1,4 @@
-# pdf-merge
+# pdf_merge
 
 Juntador de PDFs
 
@@ -23,7 +23,7 @@ Uma vez criada a pasta do ambiente virtual, é preciso ativá-la :
 Para executar, basta digitar no terminal / prompt de comando :
 
 ```bash
-pdf-merge❯ python main.py
+pdf_merge❯ python main.py
 ```
 
 ## build

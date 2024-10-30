@@ -12,13 +12,12 @@ from tkinter.ttk import Button, Entry, Frame, Label, Style
 from PIL import Image, ImageTk
 from PyPDF2 import PdfReader, PdfWriter
 from language import IdiomaAplicativo
-from . import __version__
+from __init__ import __version__, __url__
 
 class Aplicativo(Tk, IdiomaAplicativo):
     """ classe do aplicativo principal """
 
     url_univ = 'https://www.ufrgs.br'
-    url_repo = 'https://github.com/gutohertzog/pdf-merge'
 
     def __init__(self, idioma='pt-br'):
         Tk.__init__(self)
@@ -160,7 +159,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
         janela_info = Toplevel(self)
         janela_info.title(self.pega_texto('about-title-window'))
-        janela_info.geometry('400x275')
+        janela_info.geometry('400x300')
         janela_info.resizable(False, False)
 
         try:
@@ -180,12 +179,9 @@ class Aplicativo(Tk, IdiomaAplicativo):
             print(f'Não foi possível carregar o logo: {e}')
 
         texto_info = (
-            self.pega_texto('contributor')+
-            '\n'+
-            self.pega_texto('project')+' ('+__version__+')'+
-            '\n'+
-            '\n\nUFRGS\n\n'+
-            Aplicativo.url_repo
+            self.pega_texto('contributor') + '\n\n' +
+            self.pega_texto('project') + ' ('+__version__+')' +
+            '\n\nUFRGS\n\n' + __url__
         )
         lbl_info = Label(
                 janela_info, text=texto_info, justify="center", cursor="hand2")
@@ -194,7 +190,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
         # evento de clique para abrir o link do repositório no navegador
         lbl_info.bind(
             '<Button-1>',
-            lambda e: webbrowser.open(Aplicativo.url_repo))
+            lambda e: webbrowser.open(__url__))
 
         btn_fechar = Button(
                 janela_info,
