@@ -12,6 +12,7 @@ from tkinter.ttk import Button, Entry, Frame, Label, Style
 from PIL import Image, ImageTk
 from PyPDF2 import PdfReader, PdfWriter
 from language import IdiomaAplicativo
+from . import __version__
 
 class Aplicativo(Tk, IdiomaAplicativo):
     """ classe do aplicativo principal """
@@ -27,7 +28,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.frames:list = []
         self.pdfs:list = []
         self.tipo_arq:list = [(self.pega_texto('pdf-files'), '*.pdf')]
-        self.nome_novo_pdf:str = ''
         self.sistema = platform.system()
 
         # cria a interface
@@ -181,7 +181,10 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
         texto_info = (
             self.pega_texto('contributor')+
-            'UFRGS\n\n'+
+            '\n'+
+            self.pega_texto('project')+' ('+__version__+')'+
+            '\n'+
+            '\n\nUFRGS\n\n'+
             Aplicativo.url_repo
         )
         lbl_info = Label(
@@ -237,27 +240,11 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
             self.frames.append(frm_novo)
 
-    def escolhe_como_salvar(self):
-        """ método para pegar o nome do novo PDF, testar se foi inserido
-        a extensão .pdf nele; insere caso não exista """
-        novo_pdf = asksaveasfile(filetypes=self.tipo_arq)
-
-        # nenhum nome foi escolhido para salvar
-        # (janela fechada com Cancel ou no X)
-        if not novo_pdf:
-            self.nome_novo_pdf = ''
-            return
-
-        self.nome_novo_pdf = novo_pdf.name
-
-        # adiciona a extensão .pdf caso ainda não tenha
-        if '.pdf' != self.nome_novo_pdf[-4:]:
-            self.nome_novo_pdf += '.pdf'
-
     def merge_pdfs(self):
         """ método para realizar a fusão """
         if len(self.pdfs) < 2:
-            showwarning(self.pega_texto('warning'), self.pega_texto('two-or-more'))
+            showwarning(
+                    self.pega_texto('warning'), self.pega_texto('two-or-more'))
             return
 
         pdf_escritor = PdfWriter()
@@ -268,15 +255,20 @@ class Aplicativo(Tk, IdiomaAplicativo):
                 for pagina in pdf_leitor.pages:
                     pdf_escritor.add_page(pagina)
 
-        self.escolhe_como_salvar()
-        if not self.nome_novo_pdf:
+        novo_pdf = asksaveasfile(
+                filetypes=self.tipo_arq, defaultextension='.pdf')
+
+        # nenhum nome foi escolhido para salvar
+        # (janela fechada com Cancel ou no X)
+        if not novo_pdf:
             showwarning(self.pega_texto('warning'), self.pega_texto('no-name'))
             return
 
-        with open(self.nome_novo_pdf, 'wb') as arq:
+        with open(novo_pdf.name, 'wb') as arq:
             pdf_escritor.write(arq)
 
-        nome = self.nome_novo_pdf.split('/')
+        nome = novo_pdf.name.split('/')
         showinfo(
             self.pega_texto('success'),
             self.pega_texto('success-msg') + nome[-1])
+
