@@ -26,7 +26,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
         self.frames:list = []
         self.pdfs:list = []
-        self.tipo_arq:list = [(self.pega_texto('pdf-files'), "*.pdf")]
+        self.tipo_arq:list = [(self.pega_texto('pdf-files'), '*.pdf')]
         self.nome_novo_pdf:str = ''
         self.sistema = platform.system()
 
@@ -52,11 +52,11 @@ class Aplicativo(Tk, IdiomaAplicativo):
     def definir_tema_automatico(self):
         """ define um tema padrão com base no sistema operacional """
 
-        if self.sistema == "Windows":
+        if self.sistema == 'Windows':
             tema = 'vista' if 'vista' in self.estilo.theme_names() else 'clam'
-        elif self.sistema == "Darwin":
+        elif self.sistema == 'Darwin':
             tema = 'clam'
-        elif self.sistema == "Linux":
+        elif self.sistema == 'Linux':
             tema = 'clam'
         else:
             tema = 'default'
@@ -149,7 +149,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.menu_ajuda.entryconfig(0, label=self.pega_texto('about'))
 
         # variáveis
-        self.tipo_arq:list = [(self.pega_texto('pdf-files'), "*.pdf")]
+        self.tipo_arq:list = [(self.pega_texto('pdf-files'), '*.pdf')]
 
     def aplicar_tema(self, tema):
         """ aplica o tema escolhido pelo usuário """
@@ -160,7 +160,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
         janela_info = Toplevel(self)
         janela_info.title(self.pega_texto('about-title-window'))
-        janela_info.geometry("400x275")
+        janela_info.geometry('400x275')
         janela_info.resizable(False, False)
 
         try:
@@ -169,19 +169,19 @@ class Aplicativo(Tk, IdiomaAplicativo):
             largura, altura = img_logo.size
             img_logo = img_logo.resize((largura//6, altura//6), Image.LANCZOS)
             logo = ImageTk.PhotoImage(img_logo)
-            lbl_logo = Label(janela_info, image=logo, cursor="hand2")
+            lbl_logo = Label(janela_info, image=logo, cursor='hand2')
             lbl_logo.image = logo
             lbl_logo.pack(pady=10)
             # evento de clique para abrir o link da UFRGS
             lbl_logo.bind(
-                    "<Button-1>",
+                    '<Button-1>',
                     lambda e: webbrowser.open(Aplicativo.url_univ))
         except Exception as e:
             print(f'Não foi possível carregar o logo: {e}')
 
         texto_info = (
             self.pega_texto('contributor')+
-            "UFRGS\n\n"+
+            'UFRGS\n\n'+
             Aplicativo.url_repo
         )
         lbl_info = Label(
@@ -189,7 +189,9 @@ class Aplicativo(Tk, IdiomaAplicativo):
         lbl_info.pack(pady=10)
 
         # evento de clique para abrir o link do repositório no navegador
-        lbl_info.bind("<Button-1>", lambda e: webbrowser.open(url_repo))
+        lbl_info.bind(
+            '<Button-1>',
+            lambda e: webbrowser.open(Aplicativo.url_repo))
 
         btn_fechar = Button(
                 janela_info,
@@ -278,4 +280,3 @@ class Aplicativo(Tk, IdiomaAplicativo):
         showinfo(
             self.pega_texto('success'),
             self.pega_texto('success-msg') + nome[-1])
-
