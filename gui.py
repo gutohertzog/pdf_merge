@@ -12,7 +12,7 @@ from tkinter.ttk import Button, Entry, Frame, Label, Style
 from PIL import Image, ImageTk
 from PyPDF2 import PdfReader, PdfWriter
 from language import IdiomaAplicativo
-from __init__ import __version__, __url__
+from config import __version__, __url__
 
 class Aplicativo(Tk, IdiomaAplicativo):
     """ classe do aplicativo principal """
