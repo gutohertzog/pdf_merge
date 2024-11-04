@@ -11,8 +11,8 @@ from tkinter.messagebox import showinfo, showwarning
 from tkinter.ttk import Button, Entry, Frame, Label, Style
 from PIL import Image, ImageTk
 from PyPDF2 import PdfReader, PdfWriter
-from language import IdiomaAplicativo
-from config import __version__, __url__
+from .language import IdiomaAplicativo
+from .config import __version__, __url__
 
 class Aplicativo(Tk, IdiomaAplicativo):
     """ classe do aplicativo principal """
@@ -267,4 +267,3 @@ class Aplicativo(Tk, IdiomaAplicativo):
         showinfo(
             self.pega_texto('success'),
             self.pega_texto('success-msg') + nome[-1])
-

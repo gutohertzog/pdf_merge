@@ -1,6 +1,6 @@
 """ módulo principal """
 
-from gui import Aplicativo
+from src.gui import Aplicativo
 
 
 if __name__ == '__main__':

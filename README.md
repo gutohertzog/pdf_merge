@@ -12,13 +12,23 @@ Pacotes externos :
 
 ## preparação
 
-Para preparar o ambiente e realizar alterações no projeto, execute o arquivo [setup-win.bat](setup-win.bat) para sistemas Windows e [setup-unix.sh](setup-unix.sh) para Linux / macOS.
+Abaixo há a realação de comandos necessários para criar um ambiente virtual, ativá-lo e instalar as dependências.
 
-Ele vai remover (caso não exista) a pasta `.venv` que é usada para configurar o ambiente virtual, criará uma nova e instalará as [dependências](requisitos.txt) para que o projeto possa ser executado diretamente do fonte.
+### linux e macos
 
-Uma vez criada a pasta do ambiente virtual, é preciso ativá-la :
-- Windows : `.venv\Scripts\activate`
-- Linux / macOS : `source .venv/bin/activate`
+```bash
+> python -m venv .venv
+> source .venv/bin/activate
+> pip install -r requisitos.txt
+```
+
+### windows
+
+```powershell
+> python -m venv .venv
+> .venv\Scripts\activate
+> pip install -r requisitos.txt
+```
 
 Para executar, basta digitar no terminal / prompt de comando :
 
@@ -30,15 +40,15 @@ pdf_merge❯ python main.py
 
 Para criar o executável, é preciso executar o `pyinstaller` a partir do Terminal/Prompt de Comando. Isso vai criar um executável que pode ser distribuído.
 
-### Linux
+### linux
 
 ```bash
 pyinstaller --onefile --add-data "assets/cpd-logo.jpg:assets" --hidden-import="PIL._tkinter_finder" --noconsole main.py
 ```
 
-### Windows
+### windows
 
-```bash
+```powershell
 pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg:assets" --add-data "assets/ufrgs.ico:assets" --hidden-import="PIL._tkinter_finder" --noconsole main.py
 ```
 
@@ -50,5 +60,5 @@ pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg:
 
 ## versões
 
+- `v1.0.3` : ajustes diversos e melhor organização;
 - `v1.0.0` : lançada a primeira versão para Windows e Linux;
-

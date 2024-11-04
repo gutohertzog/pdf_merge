@@ -1,6 +1,6 @@
 """ módulo com a classe para guardar as opções de idiomas """
 
-from config import __author__
+from .config import __author__
 
 class IdiomaAplicativo:
     textos: dict[str, dict[str, str]] = {
