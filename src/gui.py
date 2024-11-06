@@ -104,14 +104,17 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
     def cria_widgets(self):
         """ cria todos os widgets padrão do aplicativo """
-        self.lbl_titulo = Label(self, font=('Arial', 16))
+        self.frm_main = Frame(self)
+        self.frm_main.pack(expand=True, fill='both')
+
+        self.lbl_titulo = Label(self.frm_main, font=('Arial', 16))
         self.lbl_titulo.pack(pady=10)
 
         self.btn_juntar = Button(
-            self, command=self.merge_pdfs)
+            self.frm_main, command=self.merge_pdfs)
         self.btn_juntar.pack(side=BOTTOM, pady=10)
 
-        frm_botoes = Frame(self)
+        frm_botoes = Frame(self.frm_main)
         self.btn_novo_pdf = Button(
             frm_botoes, command=self.cria_frame)
         self.btn_novo_pdf.pack(side=LEFT, padx=10)
@@ -180,8 +183,10 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
         texto_info = (
             self.pega_texto('contributor') + '\n\n' +
-            self.pega_texto('project') + ' ('+__version__+')' +
-            '\n\nUFRGS\n\n' + __url__
+            self.pega_texto('project') +
+            ' ('+__version__+')' +
+            '\n\nUFRGS\n\n' +
+            __url__
         )
         lbl_info = Label(
                 janela_info, text=texto_info, justify="center", cursor="hand2")
