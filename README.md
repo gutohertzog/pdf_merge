@@ -62,6 +62,7 @@ pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg:
 
 ## versões
 
+- `v1.1.1` : ajuste no import do pywinstyles;
 - `v1.1.0` : ajustado para apenas dois temas *claro* (padrão) e *escuro*;
 - `v1.0.4` : fundo da janela principal agora muda de acordo com o tema;
 - `v1.0.3` : ajustes diversos e melhor organização;

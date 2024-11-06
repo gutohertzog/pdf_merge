@@ -29,9 +29,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.tipo_arq:list = [(self.pega_texto('pdf-files'), '*.pdf')]
         self.sistema = platform.system()
 
-        if self.sistema == 'Windows':
-            import pywinstyles
-
         # cria a interface
         self.configura_aplicativo()
         self.cria_widgets()
@@ -159,6 +156,8 @@ class Aplicativo(Tk, IdiomaAplicativo):
         """ devido a uma limitação do Windows, é necessário usar essa função
         para ser possível alterar também a barra de título no Windows
         https://github.com/rdbende/Sun-Valley-ttk-theme#dark-mode-title-bar-on-windows """
+
+        import pywinstyles
 
         versao = sys.getwindowsversion()
 
