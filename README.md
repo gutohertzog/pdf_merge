@@ -8,7 +8,9 @@ Repositório para guardar o programa em Tkinter que vai juntar dois ou mais arqu
 Pacotes externos :
 - [PyPDF2](https://pypi.org/project/PyPDF2/) para realizar a fusão dos arquivos;
 - [pyinstaller](https://pypi.org/project/pyinstaller/) para criar o executável;
-- Pillow para exibir as imagens;
+- [Pillow](https://pypi.org/project/pillow/) para exibir as imagens;
+- [Sum Valley](https://pypi.org/project/sv-ttk/) para tema claro ou escuro;
+- [py-window-styles](https://pypi.org/project/pywinstyles/) para barra de tarefas do Windows;
 
 ## preparação
 
@@ -60,6 +62,7 @@ pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg:
 
 ## versões
 
+- `v1.1.0` : ajustado para apenas dois temas *claro* (padrão) e *escuro*;
 - `v1.0.4` : fundo da janela principal agora muda de acordo com o tema;
 - `v1.0.3` : ajustes diversos e melhor organização;
 - `v1.0.0` : lançada a primeira versão para Windows e Linux;

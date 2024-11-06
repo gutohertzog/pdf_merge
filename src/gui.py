@@ -4,6 +4,7 @@ import os
 import platform
 import sys
 import webbrowser
+import sv_ttk
 from tkinter import Menu, Tk, Toplevel
 from tkinter import BOTTOM, LEFT
 from tkinter.filedialog import askopenfilename, asksaveasfile
@@ -22,17 +23,20 @@ class Aplicativo(Tk, IdiomaAplicativo):
     def __init__(self, idioma='pt-br'):
         Tk.__init__(self)
         IdiomaAplicativo.__init__(self, idioma)
-        self.estilo = Style(self)
 
         self.frames:list = []
         self.pdfs:list = []
         self.tipo_arq:list = [(self.pega_texto('pdf-files'), '*.pdf')]
         self.sistema = platform.system()
 
+        if self.sistema == 'Windows':
+            import pywinstyles
+
         # cria a interface
         self.configura_aplicativo()
         self.cria_widgets()
         self.cria_menu()
+        sv_ttk.set_theme("light")  # interface clara padrão
 
         # define o idioma da interface para o padrão pt-br
         self.atualiza_interface()
@@ -47,20 +51,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
             self.iconbitmap(icone_path)
         self.maxsize(480, 640)
         self.minsize(480, 360)
-
-    def definir_tema_automatico(self):
-        """ define um tema padrão com base no sistema operacional """
-
-        if self.sistema == 'Windows':
-            tema = 'vista' if 'vista' in self.estilo.theme_names() else 'clam'
-        elif self.sistema == 'Darwin':
-            tema = 'clam'
-        elif self.sistema == 'Linux':
-            tema = 'clam'
-        else:
-            tema = 'default'
-
-        self.estilo.theme_use(tema)
 
     def caminho_arquivo(self, nome_arquivo):
         """ retorna o caminho do arquivo, compatível com o executável
@@ -94,12 +84,12 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.menu_idioma.add_command(command=lambda: self.define_texto('pt-br'))
         self.menu_idioma.add_command(command=lambda: self.define_texto('en-us'))
 
-        for tema in self.estilo.theme_names():
-            self.menu_temas.add_command(
-                label=tema.capitalize(),
-                command=lambda t=tema: self.aplicar_tema(t)
-            )
-
+        self.menu_temas.add_command(
+            label=self.pega_texto('light'),
+            command=lambda: self.aplicar_tema('claro'))
+        self.menu_temas.add_command(
+            label=self.pega_texto('dark'),
+            command=lambda: self.aplicar_tema('escuro'))
         self.config(menu=self.barra_menu)
 
     def cria_widgets(self):
@@ -111,18 +101,18 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.lbl_titulo.pack(pady=10)
 
         self.btn_juntar = Button(
-            self.frm_main, command=self.merge_pdfs)
+            self.frm_main, command=self.merge_pdfs, width=10)
         self.btn_juntar.pack(side=BOTTOM, pady=10)
 
         frm_botoes = Frame(self.frm_main)
         self.btn_novo_pdf = Button(
-            frm_botoes, command=self.cria_frame)
+            frm_botoes, command=self.cria_frame, width=12)
         self.btn_novo_pdf.pack(side=LEFT, padx=10)
         self.btn_remove_pdf = Button(
-            frm_botoes, command=self.apaga_frame)
+            frm_botoes, command=self.apaga_frame, width=12)
         self.btn_remove_pdf.pack(side=LEFT, padx=10)
         self.btn_limpar = Button(
-            frm_botoes, command=self.limpar_pdfs)
+            frm_botoes, command=self.limpar_pdfs, width=12)
         self.btn_limpar.pack(side=LEFT, padx=10)
         frm_botoes.pack()
 
@@ -148,6 +138,8 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.menu_opcoes.entryconfig(2, label=self.pega_texto('exit'))
         self.menu_idioma.entryconfig(0, label=self.pega_texto('lang_pt_br'))
         self.menu_idioma.entryconfig(1, label=self.pega_texto('lang_en_us'))
+        self.menu_temas.entryconfig(0, label=self.pega_texto('light'))
+        self.menu_temas.entryconfig(1, label=self.pega_texto('dark'))
         self.menu_ajuda.entryconfig(0, label=self.pega_texto('about'))
 
         # variáveis
@@ -155,7 +147,34 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
     def aplicar_tema(self, tema):
         """ aplica o tema escolhido pelo usuário """
-        self.estilo.theme_use(tema)
+        if tema == 'claro':
+            sv_ttk.use_light_theme()
+        else:
+            sv_ttk.use_dark_theme()
+
+        if self.sistema == 'Windows':
+            self.aplica_tema_barra_titulo()
+
+    def aplica_tema_barra_titulo(self):
+        """ devido a uma limitação do Windows, é necessário usar essa função
+        para ser possível alterar também a barra de título no Windows
+        https://github.com/rdbende/Sun-Valley-ttk-theme#dark-mode-title-bar-on-windows """
+
+        versao = sys.getwindowsversion()
+
+        if versao.major == 10 and versao.build >= 22000:
+            # define a cor da barra de título para a cor de fundo no Windows 11
+            # para melhor aparência
+            pywinstyles.change_header_color(
+                self, "#1c1c1c" if sv_ttk.get_theme() == "dark" else "#fafafa")
+        elif versao.major == 10:
+            pywinstyles.apply_style(
+                self, "dark" if sv_ttk.get_theme() == "dark" else "normal")
+
+            # gambiara para atualizar a cor da barra de título no Windows 10
+            # (não atualiza instantaneamente como no Windows 11)
+            self.wm_attributes("-alpha", 0.99)
+            self.wm_attributes("-alpha", 1)
 
     def mostra_dados(self):
         """ cria uma nova janela para mostrar os dados do aplicativo """
@@ -230,7 +249,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
                 filetypes=self.tipo_arq)
 
         if arq_path:
-            frm_novo = Frame(self)
+            frm_novo = Frame(self.frm_main)
             self.pdfs.append(arq_path)
             arq = arq_path.split('/')[-1]
             ent_arq = Entry(frm_novo, font=('Arial', 12), justify='center')
