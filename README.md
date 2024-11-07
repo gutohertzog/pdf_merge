@@ -2,8 +2,8 @@
 
 O objetido do projeto atual é criar uma ferramenta open-source usando Python e Tkinter onde seja possível unir dois ou mais PDFs em um arquivo.
 
-![Imagem do Aplicativo com tema claro](images/screenshot_20241107_155739.png.png)
-![Imagem do Aplicativo com tema escuro](images/screenshot_20241107_155818.png.png.png)
+![Imagem do Aplicativo com tema claro](images/screenshot_20241107_155739.png)
+![Imagem do Aplicativo com tema escuro](images/screenshot_20241107_155818.png)
 
 ## sobre o projeto
 
