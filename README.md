@@ -1,16 +1,23 @@
-# pdf_merge
+# Juntador de PDFs
 
-Juntador de PDFs
+O objetido do projeto atual é criar uma ferramenta open-source usando Python e Tkinter onde seja possível unir dois ou mais PDFs em um arquivo.
 
-Repositório para o programa de juntar dois ou mais arquivos PDFs em um arquivo. Ele usa o [Python](https://www.python.org/) e a interface gráfica [tkinter](https://docs.python.org/3/library/tkinter.html).
-Repositório para guardar o programa em Tkinter que vai juntar dois ou mais arquivos PDFs.
+![Imagem do Aplicativo com tema claro](images/screenshot_20241107_155739.png.png)
+![Imagem do Aplicativo com tema escuro](images/screenshot_20241107_155818.png.png.png)
+
+## sobre o projeto
+
+Ele usa o [Python](https://www.python.org/) e a interface gráfica [tkinter](https://docs.python.org/3/library/tkinter.html) para criar a interface e tornar a fusão dos PDFs possíveis.
 
 Pacotes externos :
 - [PyPDF2](https://pypi.org/project/PyPDF2/) para realizar a fusão dos arquivos;
 - [pyinstaller](https://pypi.org/project/pyinstaller/) para criar o executável;
 - [Pillow](https://pypi.org/project/pillow/) para exibir as imagens;
-- [Sum Valley](https://pypi.org/project/sv-ttk/) para tema claro ou escuro;
 - [py-window-styles](https://pypi.org/project/pywinstyles/) para barra de tarefas do Windows;
+
+Temas :
+- [Sum Valley](https://pypi.org/project/sv-ttk/) para tema claro ou escuro;
+- mais temas estão vindo...
 
 ## preparação
 
@@ -45,13 +52,13 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 ### linux
 
 ```bash
-pyinstaller --onefile --add-data "assets/cpd-logo.jpg:assets" --hidden-import="PIL._tkinter_finder" --noconsole main.py
+❯ pyinstaller --onefile --add-data "assets/cpd-logo.jpg:assets" --add-data "themes/sv_ttk/sv.tcl:sv_ttk/sv.tcl" --hidden-import="PIL._tkinter_finder" --noconsole main.py
 ```
 
 ### windows
 
 ```powershell
-pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg:assets" --add-data "assets/ufrgs.ico:assets" --hidden-import="PIL._tkinter_finder" --noconsole main.py
+pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg:assets" --add-data "themes/sv_ttk/sv.tcl:sv_ttk/sv.tcl" --add-data "assets/ufrgs.ico:assets" --hidden-import="PIL._tkinter_finder" --noconsole main.py
 ```
 
 ## todo
@@ -63,6 +70,7 @@ pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg:
 
 ## versões
 
+- `v1.2.1` : adicionado tema manualmente por conta de alguns ajustes específicos;
 - `v1.2.0` : removido o menu da barra de tarefas e movido para os botões, adicionado idiomas alemão e italiano;
 - `v1.1.1` : ajuste no import do pywinstyles;
 - `v1.1.0` : ajustado para apenas dois temas *claro* (padrão) e *escuro*;

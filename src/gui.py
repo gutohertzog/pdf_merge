@@ -4,7 +4,7 @@ import os
 import platform
 import sys
 import webbrowser
-import sv_ttk
+import themes.sv_ttk as sv_ttk
 from tkinter import Tk, Toplevel
 from tkinter import BOTTOM, LEFT, RIGHT, X
 from tkinter.filedialog import askopenfilename, asksaveasfile
