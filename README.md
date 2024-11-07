@@ -70,6 +70,7 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 
 ## versões
 
+- `v1.2.2` : ajustes para o executável;
 - `v1.2.1` : adicionado tema manualmente por conta de alguns ajustes específicos;
 - `v1.2.0` : removido o menu da barra de tarefas e movido para os botões, adicionado idiomas alemão e italiano;
 - `v1.1.1` : ajuste no import do pywinstyles;
