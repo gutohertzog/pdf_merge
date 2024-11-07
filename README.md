@@ -52,13 +52,13 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 ### linux
 
 ```bash
-❯ pyinstaller --onefile --add-data "assets/cpd-logo.jpg:assets" --add-data "themes/sv_ttk/sv.tcl:sv_ttk/sv.tcl" --hidden-import="PIL._tkinter_finder" --noconsole main.py
+❯ pyinstaller --onefile --add-data "assets/cpd-logo.jpg:assets" --add-data "themes/sv_ttk:themes/sv_ttk" --hidden-import="PIL._tkinter_finder" --noconsole main.py
 ```
 
 ### windows
 
 ```powershell
-pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg:assets" --add-data "themes/sv_ttk/sv.tcl:sv_ttk/sv.tcl" --add-data "assets/ufrgs.ico:assets" --hidden-import="PIL._tkinter_finder" --noconsole main.py
+❯ pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg;assets" --add-data "themes/sv_ttk;themes/sv_ttk" --add-data "assets/ufrgs.ico;assets" --hidden-import="PIL._tkinter_finder" --noconsole main.py
 ```
 
 ## todo

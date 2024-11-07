@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+import sys
 import tkinter
 from functools import partial
 from pathlib import Path
@@ -11,9 +13,16 @@ def _load_theme(style: ttk.Style) -> None:
     if not isinstance(style.master, tkinter.Tk):
         raise TypeError("root must be a `tkinter.Tk` instance!")
 
+    # caminho para o diretório sv_ttk dentro do executável
+    if getattr(sys, '_MEIPASS', False):
+        sv_ttk_dir = os.path.join(sys._MEIPASS, 'themes', 'sv_ttk')
+    else:
+        sv_ttk_dir = 'themes/sv_ttk'
+
+    tcl_path = os.path.join(sv_ttk_dir, 'sv.tcl')
+
     if not hasattr(style.master, "_sv_ttk_loaded"):
-        # style.tk.call("source", str(TCL_THEME_FILE_PATH))
-        style.tk.call("source", 'themes/sv_ttk/sv.tcl')
+        style.tk.call("source", tcl_path)
         style.master._sv_ttk_loaded = True  # type: ignore
 
 
