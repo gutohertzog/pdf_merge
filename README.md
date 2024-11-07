@@ -57,13 +57,17 @@ pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg:
 ## todo
 
 - [ ] adicionar remoção individual do frame (atualmente funciona com FILO);
-- [ ] adicionar mais idiomas (italiano e alemão);
+- [ ] persistir alterações como tema e idioma;
+- [x] adicionar mais idiomas (italiano e alemão);
 - [x] arrumar o tema das janelas (está apenas no widgets);
 
 ## versões
 
+- `v1.2.0` : removido o menu da barra de tarefas e movido para os botões, adicionado idiomas alemão e italiano;
 - `v1.1.1` : ajuste no import do pywinstyles;
 - `v1.1.0` : ajustado para apenas dois temas *claro* (padrão) e *escuro*;
 - `v1.0.4` : fundo da janela principal agora muda de acordo com o tema;
 - `v1.0.3` : ajustes diversos e melhor organização;
+- `v1.0.2` : ajustes diversos;
+- `v1.0.1` : ajustes diversos;
 - `v1.0.0` : lançada a primeira versão para Windows e Linux;

@@ -5,11 +5,11 @@ import platform
 import sys
 import webbrowser
 import sv_ttk
-from tkinter import Menu, Tk, Toplevel
-from tkinter import BOTTOM, LEFT
+from tkinter import Tk, Toplevel
+from tkinter import BOTTOM, LEFT, RIGHT, X
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showinfo, showwarning
-from tkinter.ttk import Button, Entry, Frame, Label, Style
+from tkinter.ttk import Button, Entry, Frame, Label, Separator, Style
 from PIL import Image, ImageTk
 from PyPDF2 import PdfReader, PdfWriter
 from .language import IdiomaAplicativo
@@ -31,12 +31,13 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
         # cria a interface
         self.configura_aplicativo()
-        self.cria_widgets()
-        self.cria_menu()
+        self.cria_frame_menu()
+        self.cria_frame_principal()
+        # self.cria_menu()
         sv_ttk.set_theme("light")  # interface clara padrão
 
         # define o idioma da interface para o padrão pt-br
-        self.atualiza_interface()
+        self.atualiza_idioma_main()
 
     # métodos de criação da UI
     def configura_aplicativo(self):
@@ -59,85 +60,89 @@ class Aplicativo(Tk, IdiomaAplicativo):
             base_path = os.path.abspath(".")
         return os.path.join(base_path, 'assets', nome_arquivo)
 
-    def cria_menu(self):
-        """ método com a configuração do menu superior """
-        self.barra_menu = Menu(self)
-        # botões barra de menu
-        self.menu_opcoes = Menu(self.barra_menu, tearoff=0)
-        self.menu_ajuda = Menu(self.barra_menu, tearoff=0)
-        self.barra_menu.add_cascade(menu=self.menu_opcoes)
-        self.barra_menu.add_cascade(menu=self.menu_ajuda)
+    def cria_frame_menu(self):
+        """ cria os widgets envolvidos no menu do aplicativo """
+        self.frm_menu = Frame(self)
+        self.frm_menu.pack(fill=X)
 
-        # botões submenus
-        self.menu_idioma = Menu(self.menu_opcoes, tearoff=0)
-        self.menu_temas = Menu(self.menu_opcoes, tearoff=0)
-        self.menu_sobre = Menu(self.menu_ajuda, tearoff=0)
+        self.btn_opcoes = Button(
+            self.frm_menu, command=self.abre_janela_opcoes)
+        self.btn_opcoes.pack(side=LEFT, padx=5, pady=(5, 0))
 
-        self.menu_opcoes.add_cascade(menu=self.menu_idioma)
-        self.menu_opcoes.add_cascade(menu=self.menu_temas)
-        self.menu_opcoes.add_command(command=self.quit)
-        self.menu_ajuda.add_command(command=self.mostra_dados)
+        self.btn_sobre = Button(
+            self.frm_menu, command=self.abre_janela_sobre)
+        self.btn_sobre.pack(side=LEFT, padx=5, pady=(5, 0))
 
-        self.menu_idioma.add_command(command=lambda: self.define_texto('pt-br'))
-        self.menu_idioma.add_command(command=lambda: self.define_texto('en-us'))
+        self.btn_sair = Button(
+            self.frm_menu, command=self.quit)
+        self.btn_sair.pack(side=RIGHT, padx=5, pady=(5, 0))
 
-        self.menu_temas.add_command(
-            label=self.pega_texto('light'),
-            command=lambda: self.aplicar_tema('claro'))
-        self.menu_temas.add_command(
-            label=self.pega_texto('dark'),
-            command=lambda: self.aplicar_tema('escuro'))
-        self.config(menu=self.barra_menu)
-
-    def cria_widgets(self):
-        """ cria todos os widgets padrão do aplicativo """
+    def cria_frame_principal(self):
+        """ cria os widgets envolvidos no merge dos PDFs """
         self.frm_main = Frame(self)
         self.frm_main.pack(expand=True, fill='both')
 
+        Separator(
+            self.frm_main,
+            orient='horizontal').pack(fill=X, pady=(5, 10))
+
         self.lbl_titulo = Label(self.frm_main, font=('Arial', 16))
-        self.lbl_titulo.pack(pady=10)
+        self.lbl_titulo.pack(pady=(0, 10))
 
         self.btn_juntar = Button(
-            self.frm_main, command=self.merge_pdfs, width=10)
+            self.frm_main, command=self.merge_pdfs)
         self.btn_juntar.pack(side=BOTTOM, pady=10)
 
         frm_botoes = Frame(self.frm_main)
         self.btn_novo_pdf = Button(
-            frm_botoes, command=self.cria_frame, width=12)
+            frm_botoes, command=self.cria_frame)
         self.btn_novo_pdf.pack(side=LEFT, padx=10)
         self.btn_remove_pdf = Button(
-            frm_botoes, command=self.apaga_frame, width=12)
+            frm_botoes, command=self.apaga_frame)
         self.btn_remove_pdf.pack(side=LEFT, padx=10)
         self.btn_limpar = Button(
-            frm_botoes, command=self.limpar_pdfs, width=12)
+            frm_botoes, command=self.limpar_pdfs)
         self.btn_limpar.pack(side=LEFT, padx=10)
         frm_botoes.pack()
 
     def atualiza_interface(self):
-        """ método usado para criar os textos com base no idioma escolhido """
+        """ método usado para criar e atualizar os textos da aplicação. essa
+        separação é necessária porque não é possível atualizar o idioma dos
+        widgets da janela de menu antes dela ter sido criada.
+        """
+        self.atualiza_idioma_main()
+        self.atualiza_idioma_janela_menu()
+
+    def atualiza_idioma_janela_menu(self):
+        """ método usado para criar e atualizar os textos da janela aberta pelo
+        menu com base no idioma escolhido """
+        self.janela_opcoes.title(self.pega_texto('options'))
+        self.lbl_idioma['text'] = self.pega_texto('language')
+        self.btn_pt_br ['text'] = self.pega_texto('lang_pt_br')
+        self.btn_en_us ['text'] = self.pega_texto('lang_en_us')
+        self.btn_de ['text'] = self.pega_texto('lang_de')
+        self.btn_it ['text'] = self.pega_texto('lang_it')
+        self.lbl_temas['text'] = self.pega_texto('themes')
+        self.btn_claro['text'] = self.pega_texto('light')
+        self.btn_escuro['text'] = self.pega_texto('dark')
+        self.btn_fechar['text'] = self.pega_texto('close')
+
+    def atualiza_idioma_main(self):
+        """ método usado para criar e atualizar os textos da janela principal
+        com base no idioma escolhido """
         self.title(self.pega_texto('title-window'))
 
-        # atualiza os widgets
+        # atualiza os botões do frame menu
+        self.btn_opcoes['text'] = self.pega_texto('options')
+        self.btn_sobre['text'] = self.pega_texto('about')
+        self.btn_sair['text'] = self.pega_texto('exit')
+
+        # atualiza os widgets do frame principal
         self.lbl_titulo['text'] = self.pega_texto('title')
         self.btn_juntar['text'] = self.pega_texto('merge')
         self.btn_novo_pdf['text'] = self.pega_texto('load')
         self.btn_remove_pdf['text'] = self.pega_texto('remove')
         self.btn_limpar['text'] = self.pega_texto('clear')
-
-        # atualiza os menus
-        # barra de menus
-        self.barra_menu.entryconfig(1, label=self.pega_texto('options'))
-        self.barra_menu.entryconfig(2, label=self.pega_texto('help'))
-
-        # submenus
-        self.menu_opcoes.entryconfig(0, label=self.pega_texto('language'))
-        self.menu_opcoes.entryconfig(1, label=self.pega_texto('themes'))
-        self.menu_opcoes.entryconfig(2, label=self.pega_texto('exit'))
-        self.menu_idioma.entryconfig(0, label=self.pega_texto('lang_pt_br'))
-        self.menu_idioma.entryconfig(1, label=self.pega_texto('lang_en_us'))
-        self.menu_temas.entryconfig(0, label=self.pega_texto('light'))
-        self.menu_temas.entryconfig(1, label=self.pega_texto('dark'))
-        self.menu_ajuda.entryconfig(0, label=self.pega_texto('about'))
 
         # variáveis
         self.tipo_arq:list = [(self.pega_texto('pdf-files'), '*.pdf')]
@@ -156,7 +161,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
         """ devido a uma limitação do Windows, é necessário usar essa função
         para ser possível alterar também a barra de título no Windows
         https://github.com/rdbende/Sun-Valley-ttk-theme#dark-mode-title-bar-on-windows """
-
         import pywinstyles
 
         versao = sys.getwindowsversion()
@@ -175,21 +179,72 @@ class Aplicativo(Tk, IdiomaAplicativo):
             self.wm_attributes("-alpha", 0.99)
             self.wm_attributes("-alpha", 1)
 
-    def mostra_dados(self):
-        """ cria uma nova janela para mostrar os dados do aplicativo """
+    def abre_janela_opcoes(self):
+        """ abre um toplevel com as opções disponíveis """
+        self.janela_opcoes = Toplevel(self)
+        self.janela_opcoes.minsize(200, 275)
+        self.janela_opcoes.transient(self)
+        self.janela_opcoes.grab_set()
 
-        janela_info = Toplevel(self)
-        janela_info.title(self.pega_texto('about-title-window'))
-        janela_info.geometry('400x300')
-        janela_info.resizable(False, False)
+        self.lbl_temas = Label(self.janela_opcoes)
+        self.lbl_temas.pack(pady=(10, 5))
+        self.btn_claro = Button(
+            self.janela_opcoes, command=lambda: self.aplicar_tema('claro'))
+        self.btn_claro.pack(pady=5)
+        self.btn_escuro = Button(
+            self.janela_opcoes, command=lambda: self.aplicar_tema('escuro'))
+        self.btn_escuro.pack(pady=5)
+
+        Separator(
+            self.janela_opcoes,
+            orient='horizontal').pack(fill=X, padx=10, pady=15)
+
+        self.lbl_idioma = Label(self.janela_opcoes)
+        self.lbl_idioma.pack(pady=5)
+        self.btn_pt_br = Button(
+            self.janela_opcoes,command=lambda: self.define_texto('pt-br'))
+        self.btn_pt_br.pack(pady=5)
+        self.btn_en_us = Button(
+            self.janela_opcoes, command=lambda: self.define_texto('en-us'))
+        self.btn_en_us.pack(pady=5)
+        self.btn_de = Button(
+            self.janela_opcoes, command=lambda: self.define_texto('de'))
+        self.btn_de.pack(pady=5)
+        self.btn_it = Button(
+            self.janela_opcoes, command=lambda: self.define_texto('it'))
+        self.btn_it.pack(pady=5)
+
+        Separator(
+            self.janela_opcoes,
+            orient='horizontal').pack(fill=X, padx=10, pady=15)
+
+        self.btn_fechar = Button(
+            self.janela_opcoes, command=self.janela_opcoes.destroy)
+        self.btn_fechar.pack(pady=(5, 10))
+
+        self.atualiza_interface()
+
+    def abre_janela_sobre(self):
+        """ cria uma nova janela para mostrar os dados do aplicativo. tornando
+        a janela grab_set, evita que se tenha a janela aberta quando for tentar
+        alterar o texto e também evita que várias instâncias sejam criadas de
+        qualquer janela. """
+
+        janela_sobre = Toplevel(self)
+        janela_sobre.title(self.pega_texto('about-title-window'))
+        janela_sobre.geometry('400x300')
+        janela_sobre.resizable(False, False)
+        janela_sobre.transient(self)
+        janela_sobre.grab_set()
 
         try:
-            img_path = self.caminho_arquivo('cpd-logo.jpg')
-            img_logo = Image.open(img_path)
-            largura, altura = img_logo.size
-            img_logo = img_logo.resize((largura//6, altura//6), Image.LANCZOS)
+            img_caminho = self.caminho_arquivo('cpd-logo.jpg')
+            img_logo = Image.open(img_caminho)
+            img_largura, img_altura = img_logo.size
+            img_logo = img_logo.resize(
+                (img_largura//6, img_altura//6), Image.LANCZOS)
             logo = ImageTk.PhotoImage(img_logo)
-            lbl_logo = Label(janela_info, image=logo, cursor='hand2')
+            lbl_logo = Label(janela_sobre, image=logo, cursor='hand2')
             lbl_logo.image = logo
             lbl_logo.pack(pady=10)
             # evento de clique para abrir o link da UFRGS
@@ -207,7 +262,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
             __url__
         )
         lbl_info = Label(
-                janela_info, text=texto_info, justify="center", cursor="hand2")
+                janela_sobre, text=texto_info, justify="center", cursor="hand2")
         lbl_info.pack(pady=10)
 
         # evento de clique para abrir o link do repositório no navegador
@@ -216,14 +271,14 @@ class Aplicativo(Tk, IdiomaAplicativo):
             lambda e: webbrowser.open(__url__))
 
         btn_fechar = Button(
-                janela_info,
+                janela_sobre,
                 text=self.pega_texto('close'),
-                command=janela_info.destroy)
+                command=janela_sobre.destroy)
         btn_fechar.pack(pady=10)
 
-        janela_info.wait_window(janela_info)
+        # necessário para mostrar as imagens
+        janela_sobre.wait_window(janela_sobre)
 
-    # métodos de ação
     def apaga_frame(self):
         """ função para apagar o último frame da pilha;
         até o momento, funciona como FILO """
@@ -234,7 +289,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
             self.update()
 
     def limpar_pdfs(self):
-        """ remove todos os PDFs adicionados previamente """
+        """ remove todos os PDFs adicionados """
         for frame in self.frames:
             frame.destroy()
         self.frames = []
@@ -242,7 +297,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.update()
 
     def cria_frame(self):
-        """ abre a janela para carregar novo PDF e adciona o frame """
+        """ abre a janela para carregar novo PDF e adcionar um novo frame """
         arq_path = askopenfilename(
                 title=self.pega_texto('select'),
                 filetypes=self.tipo_arq)
@@ -260,7 +315,14 @@ class Aplicativo(Tk, IdiomaAplicativo):
             self.frames.append(frm_novo)
 
     def merge_pdfs(self):
-        """ método para realizar a fusão """
+        """
+        <(-_-<)            (>-_-)>    FUU
+          ^(-_-)^         ^(-_-)^     UUU
+              (>-_-)>  <(-_-<)        UUU
+             <(-_-<)    (>-_-)>       SÃO
+               (>-_-)><(-_-<)         HA!
+                    (Ò-Ó)
+        """
         if len(self.pdfs) < 2:
             showwarning(
                     self.pega_texto('warning'), self.pega_texto('two-or-more'))
