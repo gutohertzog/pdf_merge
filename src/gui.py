@@ -33,35 +33,31 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.configura_aplicativo()
         self.cria_frame_menu()
         self.cria_frame_principal()
-        # self.cria_menu()
         sv_ttk.set_theme("light")  # interface clara padrão
 
-        # define o idioma da interface para o padrão pt-br
-        self.atualiza_idioma_main()
+        self.atualiza_idioma_main()  # idioma padrão pt-br
 
-    # métodos de criação da UI
     def configura_aplicativo(self):
         """ método com as configurações da janela """
         self.geometry('480x360')
         # linux não lidam bem com ícones no aplicativo
         if self.sistema == 'Windows':
-            icone_path = self.caminho_arquivo('ufrgs.ico')
+            icone_path = self.caminho_arquivo('assets', 'ufrgs.ico')
             self.iconbitmap(icone_path)
         self.maxsize(480, 640)
         self.minsize(480, 360)
 
-    def caminho_arquivo(self, nome_arquivo):
-        """ retorna o caminho do arquivo, compatível com o executável
-        PyInstaller """
+    def caminho_arquivo(self, pasta, nome_arquivo):
+        """ busca o caminho do arquivo, compatível com o PyInstaller """
         # verifica se está em modo executável
         if getattr(sys, 'frozen', False):
             base_path = sys._MEIPASS
         else:
             base_path = os.path.abspath(".")
-        return os.path.join(base_path, 'assets', nome_arquivo)
+        return os.path.join(base_path, pasta, nome_arquivo)
 
     def cria_frame_menu(self):
-        """ cria os widgets envolvidos no menu do aplicativo """
+        """ cria os widgets para o menu do aplicativo """
         self.frm_menu = Frame(self)
         self.frm_menu.pack(fill=X)
 
@@ -94,6 +90,8 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.btn_juntar.pack(side=BOTTOM, pady=10)
 
         frm_botoes = Frame(self.frm_main)
+        frm_botoes.pack()
+
         self.btn_novo_pdf = Button(
             frm_botoes, command=self.cria_frame)
         self.btn_novo_pdf.pack(side=LEFT, padx=10)
@@ -103,13 +101,12 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.btn_limpar = Button(
             frm_botoes, command=self.limpar_pdfs)
         self.btn_limpar.pack(side=LEFT, padx=10)
-        frm_botoes.pack()
 
     def atualiza_interface(self):
         """ método usado para criar e atualizar os textos da aplicação. essa
-        separação é necessária porque não é possível atualizar o idioma dos
-        widgets da janela de menu antes dela ter sido criada.
-        """
+        separação dos métodos de atualização é necessária porque não é possível
+        atualizar o idioma dos widgets da janela de opções antes de ter sido
+        criada. """
         self.atualiza_idioma_main()
         self.atualiza_idioma_janela_menu()
 
@@ -117,27 +114,31 @@ class Aplicativo(Tk, IdiomaAplicativo):
         """ método usado para criar e atualizar os textos da janela aberta pelo
         menu com base no idioma escolhido """
         self.janela_opcoes.title(self.pega_texto('options'))
+
+        # botões e label do tema
+        self.lbl_temas['text'] = self.pega_texto('themes')
+        self.btn_claro['text'] = self.pega_texto('light')
+        self.btn_escuro['text'] = self.pega_texto('dark')
+        self.btn_fechar['text'] = self.pega_texto('close')
+
+        # botões e label dos idiomas
         self.lbl_idioma['text'] = self.pega_texto('language')
         self.btn_pt_br ['text'] = self.pega_texto('lang_pt_br')
         self.btn_en_us ['text'] = self.pega_texto('lang_en_us')
         self.btn_de ['text'] = self.pega_texto('lang_de')
         self.btn_it ['text'] = self.pega_texto('lang_it')
-        self.lbl_temas['text'] = self.pega_texto('themes')
-        self.btn_claro['text'] = self.pega_texto('light')
-        self.btn_escuro['text'] = self.pega_texto('dark')
-        self.btn_fechar['text'] = self.pega_texto('close')
 
     def atualiza_idioma_main(self):
         """ método usado para criar e atualizar os textos da janela principal
         com base no idioma escolhido """
         self.title(self.pega_texto('title-window'))
 
-        # atualiza os botões do frame menu
+        # botões de menu
         self.btn_opcoes['text'] = self.pega_texto('options')
         self.btn_sobre['text'] = self.pega_texto('about')
         self.btn_sair['text'] = self.pega_texto('exit')
 
-        # atualiza os widgets do frame principal
+        # botões e label do frame principal
         self.lbl_titulo['text'] = self.pega_texto('title')
         self.btn_juntar['text'] = self.pega_texto('merge')
         self.btn_novo_pdf['text'] = self.pega_texto('load')
@@ -238,7 +239,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
         janela_sobre.grab_set()
 
         try:
-            img_caminho = self.caminho_arquivo('cpd-logo.jpg')
+            img_caminho = self.caminho_arquivo('assets', 'cpd-logo.jpg')
             img_logo = Image.open(img_caminho)
             img_largura, img_altura = img_logo.size
             img_logo = img_logo.resize(

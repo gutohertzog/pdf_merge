@@ -1,6 +1,7 @@
 # Juntador de PDFs
 
 O objetido do projeto atual é criar uma ferramenta open-source usando Python e Tkinter onde seja possível unir dois ou mais PDFs em um arquivo.
+
 <p align="center">
   <img src="images/screenshot_20241107_155739.png">
 </p>
@@ -29,17 +30,17 @@ Abaixo há a realação de comandos necessários para criar um ambiente virtual,
 ### linux e macos
 
 ```bash
-> python -m venv .venv
-> source .venv/bin/activate
-> pip install -r requisitos.txt
+pdf_merge❯ python -m venv .venv
+pdf_merge❯ source .venv/bin/activate
+pdf_merge❯ pip install -r requisitos.txt
 ```
 
 ### windows
 
 ```powershell
-> python -m venv .venv
-> .venv\Scripts\activate
-> pip install -r requisitos.txt
+pdf_merge❯ python -m venv .venv
+pdf_merge❯ .venv\Scripts\activate
+pdf_merge❯ pip install -r requisitos.txt
 ```
 
 Para executar, basta digitar no terminal / prompt de comando :
@@ -68,11 +69,13 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 
 - [ ] adicionar remoção individual do frame (atualmente funciona com FILO);
 - [ ] persistir alterações como tema e idioma;
+- [ ] adicionar idioma espanhol;
 - [x] adicionar mais idiomas (italiano e alemão);
 - [x] arrumar o tema das janelas (está apenas no widgets);
 
 ## versões
 
+- `v1.2.3` : melhor comentários e organização do código;
 - `v1.2.2` : ajustes para o executável;
 - `v1.2.1` : adicionado tema manualmente por conta de alguns ajustes específicos;
 - `v1.2.0` : removido o menu da barra de tarefas e movido para os botões, adicionado idiomas alemão e italiano;
