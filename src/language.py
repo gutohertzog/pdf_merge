@@ -134,14 +134,14 @@ class IdiomaAplicativo:
         """ define o idioma padão """
         self.idioma:str = idioma
 
-    def pega_texto(self, chave:str):
+    def pega_texto(self, chave:str) -> str:
         return self.textos[self.idioma].get(chave, '')
 
-    def define_texto(self, idioma):
-        self.idioma = idioma
+    def define_texto(self, idioma) -> None:
+        self.idioma:str = idioma
         self.atualiza_interface()
 
-    def atualiza_interface(self):
+    def atualiza_interface(self) -> None:
         """ método a ser implementado pela classe filha para atualizar idioma
         da interface """
         pass

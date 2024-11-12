@@ -75,6 +75,7 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 
 ## versões
 
+- `v1.2.4` : anotações foram adicionadas;
 - `v1.2.3` : melhor comentários e organização do código;
 - `v1.2.2` : ajustes para o executável;
 - `v1.2.1` : adicionado tema manualmente por conta de alguns ajustes específicos;
