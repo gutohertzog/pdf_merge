@@ -69,12 +69,13 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 
 - [ ] adicionar remoção individual do frame (atualmente funciona com FILO);
 - [ ] persistir alterações como tema e idioma;
-- [ ] adicionar idioma espanhol;
+- [x] adicionar idioma espanhol;
 - [x] adicionar mais idiomas (italiano e alemão);
 - [x] arrumar o tema das janelas (está apenas no widgets);
 
 ## versões
 
+- `v1.2.5` : adicionado idioma espanho e removido o \_\_init\_\_.py;
 - `v1.2.4` : anotações foram adicionadas;
 - `v1.2.3` : melhor comentários e organização do código;
 - `v1.2.2` : ajustes para o executável;

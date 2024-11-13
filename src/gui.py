@@ -20,7 +20,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
     url_univ:str = 'https://www.ufrgs.br'
 
-    def __init__(self, idioma='pt-br'):
+    def __init__(self, idioma='pt'):
         Tk.__init__(self)
         IdiomaAplicativo.__init__(self, idioma)
 
@@ -123,8 +123,9 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
         # botões e label dos idiomas
         self.lbl_idioma['text'] = self.pega_texto('language')
-        self.btn_pt_br ['text'] = self.pega_texto('lang_pt_br')
-        self.btn_en_us ['text'] = self.pega_texto('lang_en_us')
+        self.btn_pt ['text'] = self.pega_texto('lang_pt')
+        self.btn_en ['text'] = self.pega_texto('lang_en')
+        self.btn_es ['text'] = self.pega_texto('lang_es')
         self.btn_de ['text'] = self.pega_texto('lang_de')
         self.btn_it ['text'] = self.pega_texto('lang_it')
 
@@ -202,12 +203,15 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
         self.lbl_idioma:Label = Label(self.janela_opcoes)
         self.lbl_idioma.pack(pady=5)
-        self.btn_pt_br:Button = Button(
-            self.janela_opcoes,command=lambda: self.define_texto('pt-br'))
-        self.btn_pt_br.pack(pady=5)
-        self.btn_en_us:Button = Button(
-            self.janela_opcoes, command=lambda: self.define_texto('en-us'))
-        self.btn_en_us.pack(pady=5)
+        self.btn_pt:Button = Button(
+            self.janela_opcoes,command=lambda: self.define_texto('pt'))
+        self.btn_pt.pack(pady=5)
+        self.btn_en:Button = Button(
+            self.janela_opcoes, command=lambda: self.define_texto('en'))
+        self.btn_en.pack(pady=5)
+        self.btn_es:Button = Button(
+            self.janela_opcoes, command=lambda: self.define_texto('es'))
+        self.btn_es.pack(pady=5)
         self.btn_de:Button = Button(
             self.janela_opcoes, command=lambda: self.define_texto('de'))
         self.btn_de.pack(pady=5)
