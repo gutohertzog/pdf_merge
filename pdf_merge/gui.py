@@ -4,30 +4,33 @@ import os
 import platform
 import sys
 import webbrowser
-import themes.sv_ttk as sv_ttk
+
+from PIL import Image
+from PIL.ImageTk import PhotoImage
+from PyPDF2 import PdfReader, PdfWriter
+from PyPDF2.errors import PdfReadError
 from tkinter import Tk, Toplevel, BOTTOM, LEFT, RIGHT, X
 from tkinter.filedialog import askopenfilename, asksaveasfile
 from tkinter.messagebox import showinfo, showwarning
 from tkinter.ttk import Button, Entry, Frame, Label, Separator
-from PIL import Image
-from PIL.ImageTk import PhotoImage
-from PyPDF2 import PdfReader, PdfWriter
+
+from . import __url__, __version__
 from .language import IdiomaAplicativo
-from .config import __version__, __url__
+from .themes import sv_ttk
 
 class Aplicativo(Tk, IdiomaAplicativo):
     """ classe do aplicativo principal """
 
-    url_univ:str = 'https://www.ufrgs.br'
+    url_univ: str = "https://www.ufrgs.br"
 
-    def __init__(self, idioma='pt'):
+    def __init__(self, idioma: str = "pt"):
         Tk.__init__(self)
         IdiomaAplicativo.__init__(self, idioma)
 
-        self.frames:list = []
-        self.pdfs:list = []
-        self.tipo_arq:list = [(self.pega_texto('pdf-files'), '*.pdf')]
-        self.sistema:str = platform.system()
+        self.frames: list = []
+        self.pdfs: list = []
+        self.tipo_arq: list = [(self.pega_texto("pdf-files"), "*.pdf")]
+        self.sistema: str = platform.system()
 
         # cria a interface
         self.configura_aplicativo()
@@ -39,66 +42,65 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
     def configura_aplicativo(self) -> None:
         """ método com as configurações da janela """
-        self.geometry('480x360')
+        self.geometry("480x360")
         # linux não lidam bem com ícones no aplicativo
-        if self.sistema == 'Windows':
-            icone_path:str = self.caminho_arquivo('assets', 'ufrgs.ico')
+        if self.sistema == "Windows":
+            icone_path: str = self.caminho_arquivo("assets", "ufrgs.ico")
             self.iconbitmap(icone_path)
         self.maxsize(480, 640)
         self.minsize(480, 360)
 
-    def caminho_arquivo(self, pasta:str, nome_arquivo:str) -> str:
+    def caminho_arquivo(self, pasta: str, nome_arquivo: str) -> str:
         """ busca o caminho do arquivo, compatível com o PyInstaller """
         # verifica se está em modo executável
-        if getattr(sys, 'frozen', False):
-            base_path:str = sys._MEIPASS
+        if getattr(sys, "frozen", False):
+            base_path: str = sys._MEIPASS
         else:
-            base_path:str = os.path.abspath(".")
-        return os.path.join(base_path, pasta, nome_arquivo)
+            base_path: str = os.path.abspath(".")
+        return os.path.join(base_path, "pdf_merge", pasta, nome_arquivo)
 
     def cria_frame_menu(self) -> None:
         """ cria os widgets para o menu do aplicativo """
-        self.frm_menu:Frame = Frame(self)
+        self.frm_menu: Frame = Frame(self)
         self.frm_menu.pack(fill=X)
 
-        self.btn_opcoes:Button = Button(
+        self.btn_opcoes: Button = Button(
             self.frm_menu, command=self.abre_janela_opcoes)
         self.btn_opcoes.pack(side=LEFT, padx=5, pady=(5, 0))
 
-        self.btn_sobre:Button = Button(
+        self.btn_sobre: Button = Button(
             self.frm_menu, command=self.abre_janela_sobre)
         self.btn_sobre.pack(side=LEFT, padx=5, pady=(5, 0))
 
-        self.btn_sair:Button = Button(
+        self.btn_sair: Button = Button(
             self.frm_menu, command=self.quit)
         self.btn_sair.pack(side=RIGHT, padx=5, pady=(5, 0))
 
     def cria_frame_principal(self) -> None:
         """ cria os widgets envolvidos no merge dos PDFs """
-        self.frm_main:Frame = Frame(self)
-        self.frm_main.pack(expand=True, fill='both')
+        self.frm_main: Frame = Frame(self)
+        self.frm_main.pack(expand=True, fill="both")
 
         Separator(
-            self.frm_main,
-            orient='horizontal').pack(fill=X, pady=(5, 10))
+            self.frm_main, orient="horizontal").pack(fill=X, pady=(5, 10))
 
-        self.lbl_titulo:Label = Label(self.frm_main, font=('Arial', 16))
+        self.lbl_titulo: Label = Label(self.frm_main, font=("Arial", 16))
         self.lbl_titulo.pack(pady=(0, 10))
 
-        self.btn_juntar:Button = Button(
+        self.btn_juntar: Button = Button(
             self.frm_main, command=self.merge_pdfs)
         self.btn_juntar.pack(side=BOTTOM, pady=10)
 
-        frm_botoes:Frame = Frame(self.frm_main)
+        frm_botoes: Frame = Frame(self.frm_main)
         frm_botoes.pack()
 
-        self.btn_novo_pdf:Button = Button(
+        self.btn_novo_pdf: Button = Button(
             frm_botoes, command=self.cria_frame)
         self.btn_novo_pdf.pack(side=LEFT, padx=10)
-        self.btn_remove_pdf:Button = Button(
+        self.btn_remove_pdf: Button = Button(
             frm_botoes, command=self.apaga_frame)
         self.btn_remove_pdf.pack(side=LEFT, padx=10)
-        self.btn_limpar:Button = Button(
+        self.btn_limpar: Button = Button(
             frm_botoes, command=self.limpar_pdfs)
         self.btn_limpar.pack(side=LEFT, padx=10)
 
@@ -113,50 +115,50 @@ class Aplicativo(Tk, IdiomaAplicativo):
     def atualiza_idioma_janela_menu(self) -> None:
         """ método usado para criar e atualizar os textos da janela aberta pelo
         menu com base no idioma escolhido """
-        self.janela_opcoes.title(self.pega_texto('options'))
+        self.janela_opcoes.title(self.pega_texto("options"))
 
         # botões e label do tema
-        self.lbl_temas['text'] = self.pega_texto('themes')
-        self.btn_claro['text'] = self.pega_texto('light')
-        self.btn_escuro['text'] = self.pega_texto('dark')
-        self.btn_fechar['text'] = self.pega_texto('close')
+        self.lbl_temas["text"] = self.pega_texto("themes")
+        self.btn_claro["text"] = self.pega_texto("light")
+        self.btn_escuro["text"] = self.pega_texto("dark")
+        self.btn_fechar["text"] = self.pega_texto("close")
 
         # botões e label dos idiomas
-        self.lbl_idioma['text'] = self.pega_texto('language')
-        self.btn_pt ['text'] = self.pega_texto('lang_pt')
-        self.btn_en ['text'] = self.pega_texto('lang_en')
-        self.btn_es ['text'] = self.pega_texto('lang_es')
-        self.btn_de ['text'] = self.pega_texto('lang_de')
-        self.btn_it ['text'] = self.pega_texto('lang_it')
+        self.lbl_idioma["text"] = self.pega_texto("language")
+        self.btn_pt ["text"] = self.pega_texto("lang_pt")
+        self.btn_en ["text"] = self.pega_texto("lang_en")
+        self.btn_es ["text"] = self.pega_texto("lang_es")
+        self.btn_de ["text"] = self.pega_texto("lang_de")
+        self.btn_it ["text"] = self.pega_texto("lang_it")
 
     def atualiza_idioma_main(self) -> None:
         """ método usado para criar e atualizar os textos da janela principal
         com base no idioma escolhido """
-        self.title(self.pega_texto('title-window'))
+        self.title(self.pega_texto("title-window"))
 
         # botões de menu
-        self.btn_opcoes['text'] = self.pega_texto('options')
-        self.btn_sobre['text'] = self.pega_texto('about')
-        self.btn_sair['text'] = self.pega_texto('exit')
+        self.btn_opcoes["text"] = self.pega_texto("options")
+        self.btn_sobre["text"] = self.pega_texto("about")
+        self.btn_sair["text"] = self.pega_texto("exit")
 
         # botões e label do frame principal
-        self.lbl_titulo['text'] = self.pega_texto('title')
-        self.btn_juntar['text'] = self.pega_texto('merge')
-        self.btn_novo_pdf['text'] = self.pega_texto('load')
-        self.btn_remove_pdf['text'] = self.pega_texto('remove')
-        self.btn_limpar['text'] = self.pega_texto('clear')
+        self.lbl_titulo["text"] = self.pega_texto("title")
+        self.btn_juntar["text"] = self.pega_texto("merge")
+        self.btn_novo_pdf["text"] = self.pega_texto("load")
+        self.btn_remove_pdf["text"] = self.pega_texto("remove")
+        self.btn_limpar["text"] = self.pega_texto("clear")
 
         # variáveis
-        self.tipo_arq:list = [(self.pega_texto('pdf-files'), '*.pdf')]
+        self.tipo_arq: list = [(self.pega_texto("pdf-files"), "*.pdf")]
 
-    def aplicar_tema(self, tema:str) -> None:
+    def aplicar_tema(self, tema: str) -> None:
         """ aplica o tema escolhido pelo usuário """
-        if tema == 'claro':
+        if tema == "claro":
             sv_ttk.use_light_theme()
         else:
             sv_ttk.use_dark_theme()
 
-        if self.sistema == 'Windows':
+        if self.sistema == "Windows":
             self.aplica_tema_barra_titulo()
 
     def aplica_tema_barra_titulo(self) -> None:
@@ -188,42 +190,42 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.janela_opcoes.transient(self)
         self.janela_opcoes.grab_set()
 
-        self.lbl_temas:Label = Label(self.janela_opcoes)
+        self.lbl_temas: Label = Label(self.janela_opcoes)
         self.lbl_temas.pack(pady=(10, 5))
-        self.btn_claro:Button = Button(
-            self.janela_opcoes, command=lambda: self.aplicar_tema('claro'))
+        self.btn_claro: Button = Button(
+            self.janela_opcoes, command=lambda: self.aplicar_tema("claro"))
         self.btn_claro.pack(pady=5)
-        self.btn_escuro:Button = Button(
-            self.janela_opcoes, command=lambda: self.aplicar_tema('escuro'))
+        self.btn_escuro: Button = Button(
+            self.janela_opcoes, command=lambda: self.aplicar_tema("escuro"))
         self.btn_escuro.pack(pady=5)
 
         Separator(
             self.janela_opcoes,
-            orient='horizontal').pack(fill=X, padx=10, pady=15)
+            orient="horizontal").pack(fill=X, padx=10, pady=15)
 
-        self.lbl_idioma:Label = Label(self.janela_opcoes)
+        self.lbl_idioma: Label = Label(self.janela_opcoes)
         self.lbl_idioma.pack(pady=5)
-        self.btn_pt:Button = Button(
-            self.janela_opcoes,command=lambda: self.define_texto('pt'))
+        self.btn_pt: Button = Button(
+            self.janela_opcoes,command=lambda: self.define_texto("pt"))
         self.btn_pt.pack(pady=5)
-        self.btn_en:Button = Button(
-            self.janela_opcoes, command=lambda: self.define_texto('en'))
+        self.btn_en: Button = Button(
+            self.janela_opcoes, command=lambda: self.define_texto("en"))
         self.btn_en.pack(pady=5)
-        self.btn_es:Button = Button(
-            self.janela_opcoes, command=lambda: self.define_texto('es'))
+        self.btn_es: Button = Button(
+            self.janela_opcoes, command=lambda: self.define_texto("es"))
         self.btn_es.pack(pady=5)
-        self.btn_de:Button = Button(
-            self.janela_opcoes, command=lambda: self.define_texto('de'))
+        self.btn_de: Button = Button(
+            self.janela_opcoes, command=lambda: self.define_texto("de"))
         self.btn_de.pack(pady=5)
-        self.btn_it:Button = Button(
-            self.janela_opcoes, command=lambda: self.define_texto('it'))
+        self.btn_it: Button = Button(
+            self.janela_opcoes, command=lambda: self.define_texto("it"))
         self.btn_it.pack(pady=5)
 
         Separator(
             self.janela_opcoes,
-            orient='horizontal').pack(fill=X, padx=10, pady=15)
+            orient="horizontal").pack(fill=X, padx=10, pady=15)
 
-        self.btn_fechar:Button = Button(
+        self.btn_fechar: Button = Button(
             self.janela_opcoes, command=self.janela_opcoes.destroy)
         self.btn_fechar.pack(pady=(5, 10))
 
@@ -235,51 +237,48 @@ class Aplicativo(Tk, IdiomaAplicativo):
         alterar o texto e também evita que várias instâncias sejam criadas de
         qualquer janela. """
 
-        janela_sobre:Toplevel = Toplevel(self)
-        janela_sobre.title(self.pega_texto('about-title-window'))
-        janela_sobre.geometry('400x300')
+        janela_sobre: Toplevel = Toplevel(self)
+        janela_sobre.title(self.pega_texto("about-title-window"))
+        janela_sobre.geometry("400x300")
         janela_sobre.resizable(False, False)
         janela_sobre.transient(self)
         janela_sobre.grab_set()
 
         try:
-            img_caminho:str = self.caminho_arquivo('assets', 'cpd-logo.jpg')
-            img_logo:Image = Image.open(img_caminho)
-            img_largura:int = img_logo.size[0]
-            img_altura:int = img_logo.size[1]
-            img_logo:Image = img_logo.resize(
+            img_caminho: str = self.caminho_arquivo("assets", "cpd-logo.jpg")
+            img_logo: Image = Image.open(img_caminho)
+            img_largura: int = img_logo.size[0]
+            img_altura: int = img_logo.size[1]
+            img_logo: Image = img_logo.resize(
                 (img_largura//6, img_altura//6), Image.LANCZOS)
-            logo:PhotoImage = PhotoImage(img_logo)
-            lbl_logo:Label = Label(janela_sobre, image=logo, cursor='hand2')
+            logo: PhotoImage = PhotoImage(img_logo)
+            lbl_logo: Label = Label(janela_sobre, image=logo, cursor="hand2")
             lbl_logo.image = logo
             lbl_logo.pack(pady=10)
             # evento de clique para abrir o link da UFRGS
             lbl_logo.bind(
-                    '<Button-1>',
-                    lambda e: webbrowser.open(Aplicativo.url_univ))
+                "<Button-1>", lambda e: webbrowser.open(Aplicativo.url_univ))
         except Exception as e:
-            print(f'Não foi possível carregar o logo: {e}')
+            print(f"Não foi possível carregar o logo: {e}")
 
-        texto_info:str = (
-            self.pega_texto('contributor') + '\n\n' +
-            self.pega_texto('project') +
-            ' ('+__version__+')' +
-            '\n\nUFRGS\n\n' +
-            __url__
+        texto_info: str = (
+            self.pega_texto("contributor") + "\n\n" +
+            self.pega_texto("project") +
+            f" ({__version__})\n\nUFRGS\n\n{__url__}"
         )
-        lbl_info:Label = Label(
-                janela_sobre, text=texto_info, justify="center", cursor="hand2")
+        lbl_info: Label = Label(
+            janela_sobre, text=texto_info, justify="center", cursor="hand2")
         lbl_info.pack(pady=10)
 
         # evento de clique para abrir o link do repositório no navegador
         lbl_info.bind(
-            '<Button-1>',
+            "<Button-1>",
             lambda e: webbrowser.open(__url__))
 
-        btn_fechar:Button = Button(
-                janela_sobre,
-                text=self.pega_texto('close'),
-                command=janela_sobre.destroy)
+        btn_fechar: Button = Button(
+            janela_sobre,
+            text=self.pega_texto("close"),
+            command=janela_sobre.destroy)
         btn_fechar.pack(pady=10)
 
         # necessário para mostrar as imagens
@@ -298,32 +297,49 @@ class Aplicativo(Tk, IdiomaAplicativo):
         """ remove todos os PDFs adicionados """
         for frame in self.frames:
             frame.destroy()
-        self.frames = []
-        self.pdfs = []
+        self.frames: list = []
+        self.pdfs: list = []
         self.update()
 
     def cria_frame(self) -> None:
         """ abre a janela para carregar novo PDF e adcionar um novo frame """
-        arq_path:str = askopenfilename(
-                title=self.pega_texto('select'),
+        arq_path: str = askopenfilename(
+                title=self.pega_texto("select"),
                 filetypes=self.tipo_arq)
 
         if arq_path:
-            frm_novo:Frame = Frame(self.frm_main)
+            if not self.valida_pdf(arq_path):
+                showwarning(
+                    self.pega_texto("warning"),
+                    self.pega_texto("corrupted-file"))
+                return
+            frm_novo: Frame = Frame(self.frm_main)
             self.pdfs.append(arq_path)
-            arq = arq_path.split('/')[-1]
-            ent_arq:Entry = Entry(frm_novo, font=('Arial', 12), justify='center')
+            arq: str = arq_path.split("/")[-1]
+            ent_arq:Entry = Entry(
+                frm_novo, font=("Arial", 12), justify="center")
             ent_arq.insert(0, arq)
-            ent_arq['state'] = 'disabled'
+            ent_arq["state"] = "disabled"
             ent_arq.grid(row=0, column=0)
             frm_novo.pack(pady=5)
 
             self.frames.append(frm_novo)
 
+    def valida_pdf(self, arq_path: str) -> bool:
+        """ testa se é um PDF válido """
+        try:
+            with open(arq_path, "rb") as arq:
+                leitor: PdfReader = PdfReader(arq)
+                if len(leitor.pages) == 0:
+                    return False
+            return True
+        except (PdfReadError, ValueError):
+            return False
+
     def merge_pdfs(self) -> None:
         """
-        <(-_-<)            (>-_-)>    FUU
-          ^(-_-)^         ^(-_-)^     UUU
+         <(-_-<)            (>-_-)>   FUU
+           ^(-_-)^        ^(-_-)^     UUU
               (>-_-)>  <(-_-<)        UUU
              <(-_-<)    (>-_-)>       SÃO
                (>-_-)><(-_-<)         HA!
@@ -331,30 +347,30 @@ class Aplicativo(Tk, IdiomaAplicativo):
         """
         if len(self.pdfs) < 2:
             showwarning(
-                    self.pega_texto('warning'), self.pega_texto('two-or-more'))
+                self.pega_texto("warning"), self.pega_texto("two-or-more"))
             return
 
-        pdf_escritor:PdfWriter = PdfWriter()
+        pdf_escritor: PdfWriter = PdfWriter()
         for pdf in self.pdfs:
-            with open(pdf, 'rb') as arq:
-                pdf_leitor:PdfReader = PdfReader(arq)
+            with open(pdf, "rb") as arq:
+                pdf_leitor: PdfReader = PdfReader(arq)
 
                 for pagina in pdf_leitor.pages:
                     pdf_escritor.add_page(pagina)
 
-        novo_pdf = asksaveasfile(
-                filetypes=self.tipo_arq, defaultextension='.pdf')
+        novo_pdf: str = asksaveasfile(
+            filetypes=self.tipo_arq, defaultextension=".pdf")
 
         # nenhum nome foi escolhido para salvar
         # (janela fechada com Cancel ou no X)
         if not novo_pdf:
-            showwarning(self.pega_texto('warning'), self.pega_texto('no-name'))
+            showwarning(self.pega_texto("warning"), self.pega_texto("no-name"))
             return
 
-        with open(novo_pdf.name, 'wb') as arq:
+        with open(novo_pdf.name, "wb") as arq:
             pdf_escritor.write(arq)
 
-        nome:str = novo_pdf.name.split('/')
+        nome: str = novo_pdf.name.split("/")
         showinfo(
-            self.pega_texto('success'),
-            self.pega_texto('success-msg') + nome[-1])
+            self.pega_texto("success"),
+            self.pega_texto("success-msg") + nome[-1])

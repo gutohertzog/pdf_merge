@@ -14,13 +14,13 @@ O objetido do projeto atual é criar uma ferramenta open-source usando Python e 
 Ele usa o [Python](https://www.python.org/) e a interface gráfica [tkinter](https://docs.python.org/3/library/tkinter.html) para criar a interface e tornar a fusão dos PDFs possíveis.
 
 Pacotes externos :
-- [PyPDF2](https://pypi.org/project/PyPDF2/) para realizar a fusão dos arquivos;
-- [pyinstaller](https://pypi.org/project/pyinstaller/) para criar o executável;
-- [Pillow](https://pypi.org/project/pillow/) para exibir as imagens;
-- [py-window-styles](https://pypi.org/project/pywinstyles/) para barra de tarefas do Windows;
+- [PyPDF2](https://pypi.org/project/PyPDF2/) realiza a fusão dos arquivos PDFs;
+- [pyinstaller](https://pypi.org/project/pyinstaller/) cria o executável;
+- [Pillow](https://pypi.org/project/pillow/) exibe as imagens;
+- [py-window-styles](https://pypi.org/project/pywinstyles/) barra de tarefas do Windows;
 
 Temas :
-- [Sum Valley](https://pypi.org/project/sv-ttk/) para tema claro ou escuro;
+- [Sum Valley](https://pypi.org/project/sv-ttk/) tema claro ou escuro;
 - mais temas estão vindo...
 
 ## preparação
@@ -46,7 +46,7 @@ pdf_merge❯ pip install -r requisitos.txt
 Para executar, basta digitar no terminal / prompt de comando :
 
 ```bash
-pdf_merge❯ python main.py
+pdf_merge❯ python -m pdf_merge.main
 ```
 
 ## build
@@ -75,8 +75,13 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 
 ## versões
 
+- `v1.2.6` : verificação de PDFs corrompidos e organização;
 - `v1.2.5` : adicionado idioma espanho e removido o \_\_init\_\_.py;
 - `v1.2.4` : anotações foram adicionadas;
+
+<details>
+<summary>mais antigas</summary>
+
 - `v1.2.3` : melhor comentários e organização do código;
 - `v1.2.2` : ajustes para o executável;
 - `v1.2.1` : adicionado tema manualmente por conta de alguns ajustes específicos;
@@ -88,3 +93,5 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 - `v1.0.2` : ajustes diversos;
 - `v1.0.1` : ajustes diversos;
 - `v1.0.0` : lançada a primeira versão para Windows e Linux;
+
+</details>

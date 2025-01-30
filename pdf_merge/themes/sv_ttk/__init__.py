@@ -15,9 +15,9 @@ def _load_theme(style: ttk.Style) -> None:
 
     # caminho para o diretório sv_ttk dentro do executável
     if getattr(sys, '_MEIPASS', False):
-        sv_ttk_dir = os.path.join(sys._MEIPASS, 'themes', 'sv_ttk')
+        sv_ttk_dir = os.path.join(sys._MEIPASS, 'pdf_merge', 'themes', 'sv_ttk')
     else:
-        sv_ttk_dir = 'themes/sv_ttk'
+        sv_ttk_dir = 'pdf_merge/themes/sv_ttk'
 
     tcl_path = os.path.join(sv_ttk_dir, 'sv.tcl')
 
