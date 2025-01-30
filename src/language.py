@@ -4,7 +4,7 @@ from .config import __author__
 
 class IdiomaAplicativo:
     textos: dict[str, dict[str, str]] = {
-        'pt-br': {
+        'pt': {
             'about': 'Sobre',
             'about-title-window': 'Sobre o Juntador',
             'clear': 'Limpar',
@@ -13,9 +13,10 @@ class IdiomaAplicativo:
             'dark': 'Escuro',
             'exit': 'Sair',
             'lang_de': 'Alemão',
-            'lang_en_us': 'Inglês (EUA)',
+            'lang_en': 'Inglês',
+            'lang_es': 'Espanhol',
             'lang_it': 'Italiano',
-            'lang_pt_br': 'Português (Brasil)',
+            'lang_pt': 'Português',
             'language': 'Idioma',
             'light': 'Claro',
             'load': 'Carregar',
@@ -35,7 +36,7 @@ class IdiomaAplicativo:
             'warning': 'Aviso',
             'wrong-name': 'Não escolha um arquivo PDF de origem como destino',
         },
-        'en-us': {
+        'en': {
             'about': 'About',
             'about-title-window': 'About Merger',
             'clear': 'Clear',
@@ -44,9 +45,10 @@ class IdiomaAplicativo:
             'dark': 'Dark',
             'exit': 'Exit',
             'lang_de': 'German',
-            'lang_en_us': 'English (USA)',
+            'lang_en': 'English',
+            'lang_es': 'Spanish',
             'lang_it': 'Italian',
-            'lang_pt_br': 'Portuguese (Brazil)',
+            'lang_pt': 'Portuguese',
             'language': 'Language',
             'light': 'Light',
             'load': 'Load',
@@ -75,9 +77,10 @@ class IdiomaAplicativo:
             'dark': 'Dunkel',
             'exit': 'Beenden',
             'lang_de': 'Deutsch',
-            'lang_en_us': 'Englisch (USA)',
+            'lang_en': 'Englisch',
+            'lang_es': 'Spanisch',
             'lang_it': 'Italienisch',
-            'lang_pt_br': 'Portugiesisch (Brasilien)',
+            'lang_pt': 'Portugiesisch',
             'language': 'Sprache',
             'light': 'Hell',
             'load': 'Laden',
@@ -106,9 +109,10 @@ class IdiomaAplicativo:
             'dark': 'Scuro',
             'exit': 'Esci',
             'lang_de': 'Tedesco',
-            'lang_en_us': 'Inglese (USA)',
+            'lang_en': 'Inglese',
+            'lang_es': 'Spagnolo',
             'lang_it': 'Italiano',
-            'lang_pt_br': 'Portoghese (Brasile)',
+            'lang_pt': 'Portoghese',
             'language': 'Lingua',
             'light': 'Chiaro',
             'load': 'Carica',
@@ -127,21 +131,53 @@ class IdiomaAplicativo:
             'two-or-more': 'Seleziona due o più PDF',
             'warning': 'Avviso',
             'wrong-name': 'Non selezionare un file PDF di origine come destinazione',
+        },
+        'es': {
+            'about': 'Acerca de',
+            'about-title-window': 'Acerca del Combinador',
+            'clear': 'Limpiar',
+            'close': 'Cerrar',
+            'contributor': f'Un proyecto de {__author__}',
+            'dark': 'Oscuro',
+            'exit': 'Salir',
+            'lang_de': 'Alemán',
+            'lang_en': 'Inglés',
+            'lang_es': 'Español',
+            'lang_it': 'Italiano',
+            'lang_pt': 'Portugués',
+            'language': 'Idioma',
+            'light': 'Claro',
+            'load': 'Cargar',
+            'merge': 'Combinar',
+            'no-name': 'Ingrese un nombre válido para el nuevo PDF',
+            'options': 'Opciones',
+            'pdf-files': 'Archivos PDF',
+            'project': 'Combinador de PDFs',
+            'remove': 'Eliminar',
+            'select': 'Seleccionar archivo',
+            'success': 'Éxito',
+            'success-msg': 'PDF combinado como:\n',
+            'themes': 'Temas',
+            'title': 'Bienvenido al Combinador de PDFs',
+            'title-window': 'Combinador de PDFs',
+            'two-or-more': 'Seleccione dos o más PDFs',
+            'warning': 'Advertencia',
+            'wrong-name': 'No seleccione un archivo PDF de origen como destino',
         }
     }
 
-    def __init__(self, idioma:str='pt-br'):
+    def __init__(self, idioma:str='pt'):
         """ define o idioma padão """
         self.idioma:str = idioma
 
-    def pega_texto(self, chave:str):
+    def pega_texto(self, chave:str) -> str:
         return self.textos[self.idioma].get(chave, '')
 
-    def define_texto(self, idioma):
-        self.idioma = idioma
+    def define_texto(self, idioma) -> None:
+        self.idioma:str = idioma
         self.atualiza_interface()
 
-    def atualiza_interface(self):
+    def atualiza_interface(self) -> None:
         """ método a ser implementado pela classe filha para atualizar idioma
         da interface """
         pass
