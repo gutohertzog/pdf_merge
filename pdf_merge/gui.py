@@ -10,7 +10,7 @@ from PIL.ImageTk import PhotoImage
 from PyPDF2 import PdfReader, PdfWriter
 from PyPDF2.errors import PdfReadError
 from tkinter import Tk, Toplevel, BOTTOM, LEFT, RIGHT, X
-from tkinter.filedialog import askopenfilename, asksaveasfile
+from tkinter.filedialog import askopenfilenames, asksaveasfile
 from tkinter.messagebox import showinfo, showwarning
 from tkinter.ttk import Button, Entry, Frame, Label, Separator
 
@@ -302,25 +302,54 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.update()
 
     def cria_frame(self) -> None:
-        """ abre a janela para carregar novo PDF e adcionar um novo frame """
-        arq_path: str = askopenfilename(
+        """ abre a janela para carregar um ou mais PDFs e adcionar
+        os respectivos frames """
+        arqs_path: tuple[str] = askopenfilenames(
                 title=self.pega_texto("select"),
                 filetypes=self.tipo_arq)
 
-        if arq_path:
-            if not self.valida_pdf(arq_path):
-                showwarning(
-                    self.pega_texto("warning"),
-                    self.pega_texto("corrupted-file"))
-                return
+        if not arqs_path:
+            return
+
+        arqs_validos: list[str] = []
+        arqs_invalidos: list[str] = []
+        for arq_path in arqs_path:
+            if self.valida_pdf(arq_path):
+                arqs_validos.append(arq_path)
+            else:
+                arqs_invalidos.append(arq_path)
+
+        # monta a caixa de aviso de arquivos corrompidos
+        if len(arqs_path) != len(arqs_validos):
+            titulo: str = self.pega_texto("warning")
+            if len(arqs_invalidos) == 1:
+                corpo: str = self.pega_texto("corrupted-file")
+            else:
+                corpo: str = self.pega_texto("corrupted-files")
+
+            for arq_inv in arqs_invalidos:
+                corpo += f"\n  - {arq_inv.split('/')[-1]}"
+
+            showwarning(titulo, corpo)
+
+        for arq_valido in arqs_validos:
             frm_novo: Frame = Frame(self.frm_main)
-            self.pdfs.append(arq_path)
-            arq: str = arq_path.split("/")[-1]
+            self.pdfs.append(arq_valido)
+            arq: str = arq_valido.split("/")[-1]
+
             ent_arq:Entry = Entry(
-                frm_novo, font=("Arial", 12), justify="center")
+                frm_novo, font=("Arial", 14, "italic"), justify="center")
             ent_arq.insert(0, arq)
             ent_arq["state"] = "disabled"
-            ent_arq.grid(row=0, column=0)
+            ent_arq.grid(row=0, column=2)
+
+            btn_fecha: Button = Button(frm_novo, text="X")
+            btn_fecha.grid(row=0, column=3)
+            btn_sobe_um: Button = Button(frm_novo, text="∧")
+            btn_sobe_um.grid(row=0, column=0)
+            btn_desce_um: Button = Button(frm_novo, text="∨")
+            btn_desce_um.grid(row=0, column=1)
+
             frm_novo.pack(pady=5)
 
             self.frames.append(frm_novo)
@@ -374,3 +403,4 @@ class Aplicativo(Tk, IdiomaAplicativo):
         showinfo(
             self.pega_texto("success"),
             self.pega_texto("success-msg") + nome[-1])
+
