@@ -18,17 +18,79 @@ from . import __url__, __version__
 from .language import IdiomaAplicativo
 from .themes import sv_ttk
 
+class NoPdf:
+    def __init__(self, frm_main: Frame, arq_valido: str, atual: "NoPdf"):
+        self.frm_novo: Frame = Frame(frm_main)
+        self.caminho_pdf: str = arq_valido
+        self.nome_pdf: str = arq_valido.split("/")[-1]
+
+        ent_arq:Entry = Entry(
+            self.frm_novo, font=("Arial", 14, "italic"), justify="center")
+        ent_arq.insert(0, self.nome_pdf)
+        ent_arq["state"] = "disabled"
+        ent_arq.grid(row=0, column=2)
+
+        btn_fecha: Button = Button(
+            self.frm_novo, text="X", command=self.apaga_no)
+        btn_fecha.grid(row=0, column=3)
+        btn_sobe_um: Button = Button(self.frm_novo, text="∧")
+        btn_sobe_um.grid(row=0, column=0)
+        btn_desce_um: Button = Button(self.frm_novo, text="∨")
+        btn_desce_um.grid(row=0, column=1)
+
+        self.frm_novo.pack(pady=5)
+
+        # para organizar a ordem, vou usar uma lista duplamente encadeada
+        # primeiro nó
+        if not atual:
+            Aplicativo.primeiro = self
+            self.anterior = None
+        # insere na última posição
+        else:
+            while atual.proximo:
+                atual = atual.proximo
+            self.anterior = atual
+            atual.proximo = self
+        self.proximo = None
+
+    def apaga_no(self):
+        """ passa a referência do anterior para o próximo e apaga o frame """
+        # caso 1 : primeiro da lista
+        if not self.anterior and self.proximo:
+            self.proximo.anterior = None
+            Aplicativo.define_primeiro(self.proximo)
+            self.proximo = None
+
+        # caso 2 : último da lista
+        elif self.anterior and not self.proximo:
+            self.anterior.proximo = None
+            self.anterior = None
+
+        # caso 3 : entre dois nós
+        elif self.anterior and self.proximo:
+            self.anterior.proximo = self.proximo
+            self.proximo.anterior = self.anterior
+            self.proximo = None
+            self.anterior = None
+
+        # caso 4 : elemento sozinho (faz nada)
+        else:
+            pass
+
+        self.frm_novo.destroy()
+
 class Aplicativo(Tk, IdiomaAplicativo):
     """ classe do aplicativo principal """
 
     url_univ: str = "https://www.ufrgs.br"
+    primeiro: NoPdf = None
 
     def __init__(self, idioma: str = "pt"):
         Tk.__init__(self)
         IdiomaAplicativo.__init__(self, idioma)
 
-        self.frames: list = []
-        self.pdfs: list = []
+        self.frames: list[NoPdf] = []
+        # self.pdfs: list = []
         self.tipo_arq: list = [(self.pega_texto("pdf-files"), "*.pdf")]
         self.sistema: str = platform.system()
 
@@ -97,9 +159,9 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.btn_novo_pdf: Button = Button(
             frm_botoes, command=self.cria_frame)
         self.btn_novo_pdf.pack(side=LEFT, padx=10)
-        self.btn_remove_pdf: Button = Button(
-            frm_botoes, command=self.apaga_frame)
-        self.btn_remove_pdf.pack(side=LEFT, padx=10)
+        # self.btn_remove_pdf: Button = Button(
+            # frm_botoes, command=self.apaga_frame)
+        # self.btn_remove_pdf.pack(side=LEFT, padx=10)
         self.btn_limpar: Button = Button(
             frm_botoes, command=self.limpar_pdfs)
         self.btn_limpar.pack(side=LEFT, padx=10)
@@ -145,7 +207,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.lbl_titulo["text"] = self.pega_texto("title")
         self.btn_juntar["text"] = self.pega_texto("merge")
         self.btn_novo_pdf["text"] = self.pega_texto("load")
-        self.btn_remove_pdf["text"] = self.pega_texto("remove")
+        # self.btn_remove_pdf["text"] = self.pega_texto("remove")
         self.btn_limpar["text"] = self.pega_texto("clear")
 
         # variáveis
@@ -284,22 +346,37 @@ class Aplicativo(Tk, IdiomaAplicativo):
         # necessário para mostrar as imagens
         janela_sobre.wait_window(janela_sobre)
 
-    def apaga_frame(self) -> None:
-        """ função para apagar o último frame da pilha;
-        até o momento, funciona como FILO """
-        if self.frames:
-            para_apagar = self.frames.pop()
-            self.pdfs.pop()
-            para_apagar.destroy()
-            self.update()
+    # def apaga_frame(self) -> None:
+        # """ função para apagar o último frame da pilha;
+        # até o momento, funciona como FILO """
+        # if self.frames:
+            # para_apagar = self.frames.pop()
+            # self.pdfs.pop()
+            # para_apagar.destroy()
+            # self.update()
 
     def limpar_pdfs(self) -> None:
         """ remove todos os PDFs adicionados """
         for frame in self.frames:
-            frame.destroy()
+            frame.frm_novo.destroy()
         self.frames: list = []
-        self.pdfs: list = []
+        # self.pdfs: list = []
+        Aplicativo.primeiro:NoPdf = None
         self.update()
+
+    def msg_corrompidos(self, invalidos: list[str]):
+        """ mostra a janela de aviso para os arquivos inválidos """
+        if invalidos:
+            titulo: str = self.pega_texto("warning")
+            if len(invalidos) == 1:
+                corpo: str = self.pega_texto("corrupted-file")
+            else:
+                corpo: str = self.pega_texto("corrupted-files")
+
+            for invalido in invalidos:
+                corpo += f"\n  - {invalido.split('/')[-1]}"
+
+            showwarning(titulo, corpo)
 
     def cria_frame(self) -> None:
         """ abre a janela para carregar um ou mais PDFs e adcionar
@@ -319,40 +396,33 @@ class Aplicativo(Tk, IdiomaAplicativo):
             else:
                 arqs_invalidos.append(arq_path)
 
-        # monta a caixa de aviso de arquivos corrompidos
-        if len(arqs_path) != len(arqs_validos):
-            titulo: str = self.pega_texto("warning")
-            if len(arqs_invalidos) == 1:
-                corpo: str = self.pega_texto("corrupted-file")
-            else:
-                corpo: str = self.pega_texto("corrupted-files")
-
-            for arq_inv in arqs_invalidos:
-                corpo += f"\n  - {arq_inv.split('/')[-1]}"
-
-            showwarning(titulo, corpo)
+        self.msg_corrompidos(arqs_invalidos)
 
         for arq_valido in arqs_validos:
-            frm_novo: Frame = Frame(self.frm_main)
-            self.pdfs.append(arq_valido)
-            arq: str = arq_valido.split("/")[-1]
+            frm_novo: NoPdf = NoPdf(
+                    self.frm_main, arq_valido, Aplicativo.primeiro)
+            # frm_novo: Frame = Frame(self.frm_main)
+            # self.pdfs.append(arq_valido)
+            # arq: str = arq_valido.split("/")[-1]
 
-            ent_arq:Entry = Entry(
-                frm_novo, font=("Arial", 14, "italic"), justify="center")
-            ent_arq.insert(0, arq)
-            ent_arq["state"] = "disabled"
-            ent_arq.grid(row=0, column=2)
+            # ent_arq:Entry = Entry(
+                # frm_novo, font=("Arial", 14, "italic"), justify="center")
+            # ent_arq.insert(0, arq)
+            # ent_arq["state"] = "disabled"
+            # ent_arq.grid(row=0, column=2)
 
-            btn_fecha: Button = Button(frm_novo, text="X")
-            btn_fecha.grid(row=0, column=3)
-            btn_sobe_um: Button = Button(frm_novo, text="∧")
-            btn_sobe_um.grid(row=0, column=0)
-            btn_desce_um: Button = Button(frm_novo, text="∨")
-            btn_desce_um.grid(row=0, column=1)
+            # btn_fecha: Button = Button(
+                # frm_novo, text="X", command=frm_novo.destroy)
+            # btn_fecha.grid(row=0, column=3)
+            # btn_sobe_um: Button = Button(frm_novo, text="∧")
+            # btn_sobe_um.grid(row=0, column=0)
+            # btn_desce_um: Button = Button(frm_novo, text="∨")
+            # btn_desce_um.grid(row=0, column=1)
 
-            frm_novo.pack(pady=5)
+            # frm_novo.pack(pady=5)
 
             self.frames.append(frm_novo)
+            Aplicativo.mostra_nos()
 
     def valida_pdf(self, arq_path: str) -> bool:
         """ testa se é um PDF válido """
@@ -379,6 +449,12 @@ class Aplicativo(Tk, IdiomaAplicativo):
                 self.pega_texto("warning"), self.pega_texto("two-or-more"))
             return
 
+        for frame in self.frames:
+            for child in frame.winfo_children():
+                if not isinstance(child, Entry):
+                    continue
+                print(child)
+        sys.exit()
         pdf_escritor: PdfWriter = PdfWriter()
         for pdf in self.pdfs:
             with open(pdf, "rb") as arq:
@@ -403,4 +479,16 @@ class Aplicativo(Tk, IdiomaAplicativo):
         showinfo(
             self.pega_texto("success"),
             self.pega_texto("success-msg") + nome[-1])
+
+    @staticmethod
+    def define_primeiro(no_pdf: NoPdf):
+        Aplicativo.primeiro = no_pdf
+
+    @staticmethod
+    def mostra_nos():
+        atual: NoPdf = Aplicativo.primeiro
+        while atual:
+            print(atual.caminho_pdf)
+            atual = atual.proximo
+        print("\n")
 

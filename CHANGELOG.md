@@ -24,7 +24,7 @@ Os tipos de alterações
 - Adicionado o idioma espanhol.
 - Adicionado os botões para alterar a ordem dos PDFs ou remover.
 - Criada a pasta assets para as imagens do programa.
-- Novo arquivo `CHANGELOG.md` para as alterações do projeto;
+- Novo arquivo `CHANGELOG.md` para as alterações do projeto.
 - Novos textos para PDFs inválidos.
 
 ### Alterado
@@ -53,7 +53,7 @@ Os tipos de alterações
 
 - Ajuste ao importar pywinstyles.
 - Ajustes na documentação e nomes dos objetos.
-- Ajustes na versão (768204c) e links das imagens.
+- Ajustes na versão e links das imagens.
 - Arquivos do projeto movidos para uma pasta dedicada.
 - Atualização das dependências.
 - O aplicativo passa a ter apenas dois temas, claro e escuro.
@@ -125,7 +125,7 @@ Os tipos de alterações
 
 - Desativado os campos de Input para não quebrar o programa ao buscar arquivos com nomes diferentes dos selecionados.
 
-[Não Lançado]: https://github.com/gutohertzog/pdf_merge/compare/v1.2.0...HEAD
-[v1.2.0]: https://github.com/gutohertzog/pdf_merge/releases/tag/v1.2.0
-[v1.0.2]: https://github.com/gutohertzog/pdf_merge/releases/tag/v1.0.2
+[Não Lançado]: https://github.com/ufrgs/pdf_merge/compare/v1.2.0...HEAD
+[v1.2.0]: https://github.com/ufrgs/pdf_merge/releases/tag/v1.2.0
+[v1.0.2]: https://github.com/ufrgs/pdf_merge/releases/tag/v1.0.2
 
