@@ -33,9 +33,9 @@ class NoPdf:
         btn_fecha: Button = Button(
             self.frm_novo, text="X", command=self.apaga_no)
         btn_fecha.grid(row=0, column=3)
-        btn_sobe_um: Button = Button(self.frm_novo, text="∧")
+        btn_sobe_um: Button = Button(self.frm_novo, text="∧")  # logical and
         btn_sobe_um.grid(row=0, column=0)
-        btn_desce_um: Button = Button(self.frm_novo, text="∨")
+        btn_desce_um: Button = Button(self.frm_novo, text="∨")  # logical or
         btn_desce_um.grid(row=0, column=1)
 
         self.frm_novo.pack(pady=5)
@@ -52,6 +52,14 @@ class NoPdf:
             self.anterior = atual
             atual.proximo = self
         self.proximo = None
+
+
+class ListaPdf:
+    def __init__(self):
+        self.pdfs = None
+        self.primeiro: NoPdf = None
+        self.ultimo: NoPdf = None
+        self.qtd: int = 0
 
     def apaga_no(self):
         """ passa a referência do anterior para o próximo e apaga o frame """
@@ -78,6 +86,7 @@ class NoPdf:
             pass
 
         self.frm_novo.destroy()
+
 
 class Aplicativo(Tk, IdiomaAplicativo):
     """ classe do aplicativo principal """
