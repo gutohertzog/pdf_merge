@@ -23,6 +23,7 @@ Os tipos de alterações
 - Adicionado o arquivo de licença para uso da comunidade da UFRGS e externa.
 - Adicionado o idioma espanhol.
 - Adicionado os botões para alterar a ordem dos PDFs ou remover.
+- Adicionada a funcionalidade de carregar múltiplos arquivos PDF.
 - Criada a pasta assets para as imagens do programa.
 - Novo arquivo `CHANGELOG.md` para as alterações do projeto.
 - Novos textos para PDFs inválidos.
@@ -32,7 +33,6 @@ Os tipos de alterações
 - Adicionadas anotações para os objetos.
 - Ajuste no README para centralizar as imagens.
 - Ajustes nos comentários do código e no README.
-- Múltiplos arquivos PDF podem ser carregados ao mesmo tempo.
 
 ### Removido
 
