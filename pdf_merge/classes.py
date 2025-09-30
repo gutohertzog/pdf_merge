@@ -5,6 +5,7 @@ import platform
 import sys
 import webbrowser
 
+import sv_ttk
 from PIL import Image
 from PIL.ImageTk import PhotoImage
 from PyPDF2 import PdfReader, PdfWriter
@@ -16,7 +17,6 @@ from tkinter.ttk import Button, Entry, Frame, Label, Separator
 
 from . import __url__, __version__
 from .language import IdiomaAplicativo
-from .themes import sv_ttk
 
 
 class FramePdf:
@@ -193,7 +193,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.lbl_titulo["text"] = self.pega_texto("title")
         self.btn_juntar["text"] = self.pega_texto("merge")
         self.btn_novo_pdf["text"] = self.pega_texto("load")
-        # self.btn_remove_pdf["text"] = self.pega_texto("remove")
         self.btn_limpar["text"] = self.pega_texto("clear")
 
         # variáveis
@@ -334,7 +333,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
     def limpar_pdfs(self) -> None:
         """ remove todos os PDFs adicionados """
-        print(self.pdfs)
         for pdf in self.pdfs[::-1]:
             pdf.remove()
 

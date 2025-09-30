@@ -66,7 +66,7 @@ Pacotes externos :
 - [py-window-styles](https://pypi.org/project/pywinstyles/) barra de tarefas do Windows;
 
 Tema :
-- [Sum Valley](https://pypi.org/project/sv-ttk/) usado para tema claro ou escuro;
+- [Sun Valley](https://pypi.org/project/sv-ttk/) usado para tema claro ou escuro;
 
 ## preparação
 
@@ -101,13 +101,25 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 ### linux
 
 ```bash
-❯ pyinstaller --onefile --add-data "assets/cpd-logo.jpg:assets" --add-data "themes/sv_ttk:themes/sv_ttk" --hidden-import="PIL._tkinter_finder" --noconsole main.py
+❯ pyinstaller --onefile \
+    --add-data "pdf_merge/assets/cpd-logo.jpg:assets" \
+    --add-data ".venv/lib/python3.13/site-packages/sv_ttk:sv_ttk" \
+    --hidden-import="PIL._tkinter_finder" \
+    --noconsole \
+    pdf_merge/main.py
 ```
 
 ### windows
 
 ```powershell
-❯ pyinstaller --onefile --icon "assets/ufrgs.ico" --add-data "assets/cpd-logo.jpg;assets" --add-data "themes/sv_ttk;themes/sv_ttk" --add-data "assets/ufrgs.ico;assets" --hidden-import="PIL._tkinter_finder" --noconsole main.py
+❯ pyinstaller --onefile `
+    --icon "pdf_merge/assets/ufrgs.ico" `
+    --add-data "pdf_merge/assets/ufrgs.ico;assets" `
+    --add-data "pdf_merge/assets/cpd-logo.jpg;assets" `
+    --add-data ".venv/Lib/site-packages/sv_ttk;sv_ttk" \
+    --hidden-import="PIL._tkinter_finder" `
+    --noconsole `
+    pdf_merge/main.py
 ```
 
 ## todo

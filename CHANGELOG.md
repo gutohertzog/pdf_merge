@@ -18,6 +18,19 @@ Os tipos de alterações
 
 ## [Não Lançado]
 
+### Adicionado
+
+- Adicionado Sun Valley via PIP.
+
+### Alterado
+
+- Atualizado os requisitos com sv_ttk.
+- Códigos do pyinstaller atualizados em README.md.
+
+### Removido
+
+- Removida a pasta de tema para ser instalada junto com PIP.
+
 ## [v1.3.0] - 2025-09-30
 
 ### Adicionado
