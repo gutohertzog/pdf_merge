@@ -114,12 +114,12 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 ```powershell
 ❯ pyinstaller --onefile `
     --icon "pdf_merge/assets/ufrgs.ico" `
-    --add-data "pdf_merge/assets/ufrgs.ico;assets" `
-    --add-data "pdf_merge/assets/cpd-logo.jpg;assets" `
-    --add-data ".venv/Lib/site-packages/sv_ttk;sv_ttk" \
+    --add-data "pdf_merge/assets/ufrgs.ico;pdf_merge/assets" `
+    --add-data "pdf_merge/assets/cpd-logo.jpg;pdf_merge/assets" `
+    --add-data ".venv/Lib/site-packages/sv_ttk;sv_ttk" `
     --hidden-import="PIL._tkinter_finder" `
     --noconsole `
-    pdf_merge/main.py
+     pdf_merge/main.py
 ```
 
 ## todo
