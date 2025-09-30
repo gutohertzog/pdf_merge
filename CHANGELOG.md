@@ -38,6 +38,7 @@ Os tipos de alterações
 - Adicionadas anotações para os objetos.
 - Ajuste no README para centralizar as imagens.
 - Ajustes nos comentários do código e no README.
+- Alterador o link do projeto para o repositório da UFRGS.
 - Arquivos PDFs movidos para uma pasta própria.
 - Atualizado os requisitos com `sv_ttk`.
 - Atualização do `README.md` com as instruções de uso e descrição do projeto.
