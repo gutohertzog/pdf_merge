@@ -18,13 +18,17 @@ Os tipos de alterações
 
 ## [Não Lançado]
 
+## [v1.3.0] - 2025-09-30
+
 ### Adicionado
 
+- Adicionada a funcionalidade de carregar múltiplos arquivos PDF.
+- Adicionado arquivos PDFs inválidos para testes.
 - Adicionado o arquivo de licença para uso da comunidade da UFRGS e externa.
 - Adicionado o idioma espanhol.
 - Adicionado os botões para alterar a ordem dos PDFs ou remover.
-- Adicionada a funcionalidade de carregar múltiplos arquivos PDF.
 - Criada a pasta assets para as imagens do programa.
+- Novas imagens de demonstração do programa.
 - Novo arquivo `CHANGELOG.md` para as alterações do projeto.
 - Novos textos para PDFs inválidos.
 
@@ -33,6 +37,9 @@ Os tipos de alterações
 - Adicionadas anotações para os objetos.
 - Ajuste no README para centralizar as imagens.
 - Ajustes nos comentários do código e no README.
+- Arquivos PDFs movidos para uma pasta própria.
+- Atualização do `README.md` com as instruções de uso e descrição do projeto.
+- Aumentado o tamanho máximo vertical da janela.
 
 ### Removido
 
@@ -47,7 +54,7 @@ Os tipos de alterações
 - Adicionado o tema [Sum Valley](https://pypi.org/project/sv-ttk/) ao projeto para compatibilidade com pyinstaller.
 - Adicionado os idiomas alemão e italiano.
 - Botões de Ajustes e Sobre no topo da janela (substituindo o Menu).
-<!-- - Novo esater egg no código fonte. -->
+<!-- - Easter egg no código fonte. -->
 
 ### Alterado
 
@@ -66,7 +73,7 @@ Os tipos de alterações
 
 ### Corrigido
 
-- Corrigido um bug ao carregar um PDF.
+- Corrigido um bug ao carregar algum PDF.
 - Corrigido um problema no tema [Sum Valley](https://pypi.org/project/sv-ttk/) que o impedia de ser usado com pyinstaller.
 - Corrigido um problema que não alterava o tema da janela no Windows.
 
@@ -125,7 +132,8 @@ Os tipos de alterações
 
 - Desativado os campos de Input para não quebrar o programa ao buscar arquivos com nomes diferentes dos selecionados.
 
-[Não Lançado]: https://github.com/ufrgs/pdf_merge/compare/v1.2.0...HEAD
-[v1.2.0]: https://github.com/ufrgs/pdf_merge/releases/tag/v1.2.0
+[Não Lançado]: https://github.com/ufrgs/pdf_merge/compare/v1.3.0...HEAD
+[v1.3.0]: https://github.com/ufrgs/pdf_merge/compare/v1.2.0...v1.3.0
+[v1.2.0]: https://github.com/ufrgs/pdf_merge/compare/v1.0.2...v1.2.0
 [v1.0.2]: https://github.com/ufrgs/pdf_merge/releases/tag/v1.0.2
 

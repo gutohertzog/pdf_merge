@@ -32,39 +32,42 @@ class FramePdf:
         self.frame = Frame(master)
 
         nome_pdf = os.path.basename(path)
-        self.entry = Entry(self.frame, font=("Arial", 12, "italic"), justify="center")
+        self.entry = Entry(
+            self.frame, font=("Arial", 12, "italic"), justify="center")
         self.entry.insert(0, nome_pdf)
         self.entry["state"] = "disabled"
-        self.entry.grid(row=0, column=2)
+        self.entry.grid(row=0, column=2, padx=2)
 
-        # Botões de controle
-        self.btn_remover = Button(self.frame, text="X", command=self.remover)
-        self.btn_remover.grid(row=0, column=3)
+        # botões de controle
+        self.btn_remover = Button(self.frame, text="X", command=self.remove)
+        self.btn_remover.grid(row=0, column=3, padx=2)
 
-        self.btn_up = Button(self.frame, text="∧", command=self.mover_cima)
-        self.btn_up.grid(row=0, column=0)
+        self.btn_up = Button(self.frame, text="∧", command=self.move_cima)
+        self.btn_up.grid(row=0, column=0, padx=2)
 
-        self.btn_down = Button(self.frame, text="∨", command=self.mover_baixo)
-        self.btn_down.grid(row=0, column=1)
+        self.btn_down = Button(self.frame, text="∨", command=self.move_baixo)
+        self.btn_down.grid(row=0, column=1, padx=2)
 
     def pack(self):
         self.frame.pack(pady=5)
 
-    def remover(self):
+    def remove(self):
         self.frame.destroy()
         self.app.pdfs.remove(self)
 
-    def mover_cima(self):
+    def move_cima(self):
         idx = self.app.pdfs.index(self)
         if idx > 0:
-            self.app.pdfs[idx], self.app.pdfs[idx - 1] = self.app.pdfs[idx - 1], self.app.pdfs[idx]
-            self.app.reordenar_frames()
+            self.app.pdfs[idx], self.app.pdfs[idx - 1] = \
+                    self.app.pdfs[idx - 1], self.app.pdfs[idx]
+            self.app.reordena_frames()
 
-    def mover_baixo(self):
+    def move_baixo(self):
         idx = self.app.pdfs.index(self)
         if idx < len(self.app.pdfs) - 1:
-            self.app.pdfs[idx], self.app.pdfs[idx + 1] = self.app.pdfs[idx + 1], self.app.pdfs[idx]
-            self.app.reordenar_frames()
+            self.app.pdfs[idx], self.app.pdfs[idx + 1] = \
+                    self.app.pdfs[idx + 1], self.app.pdfs[idx]
+            self.app.reordena_frames()
 
 
 class Aplicativo(Tk, IdiomaAplicativo):
@@ -76,7 +79,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
         Tk.__init__(self)
         IdiomaAplicativo.__init__(self, idioma)
 
-        # self.frames: list = []
         self.pdfs: list = []
         self.tipo_arq: list = [(self.pega_texto("pdf-files"), "*.pdf")]
         self.sistema: str = platform.system()
@@ -96,7 +98,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
         if self.sistema == "Windows":
             icone_path: str = self.caminho_arquivo("assets", "ufrgs.ico")
             self.iconbitmap(icone_path)
-        self.maxsize(480, 640)
+        self.maxsize(480, 900)
         self.minsize(480, 360)
 
     def caminho_arquivo(self, pasta: str, nome_arquivo: str) -> str:
@@ -146,9 +148,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.btn_novo_pdf: Button = Button(
             frm_botoes, command=self.cria_frame)
         self.btn_novo_pdf.pack(side=LEFT, padx=10)
-        # self.btn_remove_pdf: Button = Button(
-            # frm_botoes, command=self.apaga_frame)
-        # self.btn_remove_pdf.pack(side=LEFT, padx=10)
         self.btn_limpar: Button = Button(
             frm_botoes, command=self.limpar_pdfs)
         self.btn_limpar.pack(side=LEFT, padx=10)
@@ -333,23 +332,11 @@ class Aplicativo(Tk, IdiomaAplicativo):
         # necessário para mostrar as imagens
         janela_sobre.wait_window(janela_sobre)
 
-    # def apaga_frame(self) -> None:
-        # """ função para apagar o último frame da pilha;
-        # até o momento, funciona como FILO """
-        # if self.frames:
-            # para_apagar = self.frames.pop()
-            # self.pdfs.pop()
-            # para_apagar.destroy()
-            # self.update()
-
     def limpar_pdfs(self) -> None:
         """ remove todos os PDFs adicionados """
         print(self.pdfs)
         for pdf in self.pdfs[::-1]:
-            pdf.remover()
-        # self.frames: list = []
-        # self.pdfs: list = []
-        # self.update()
+            pdf.remove()
 
     def msg_corrompidos(self, invalidos: list[str]):
         """ mostra a janela de aviso para os arquivos inválidos """
@@ -364,7 +351,8 @@ class Aplicativo(Tk, IdiomaAplicativo):
 
         showwarning(titulo, corpo)
 
-    def reordenar_frames(self):
+    def reordena_frames(self):
+        """ remove todos os frames e depois os readiciona na nova ordem """
         for f in self.pdfs:
             f.frame.pack_forget()
         for f in self.pdfs:
@@ -439,7 +427,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
         with open(novo_pdf.name, "wb") as arq:
             pdf_escritor.write(arq)
 
-        nome: str = novo_pdf.name.split("/")
         showinfo(
             self.pega_texto("success"),
-            self.pega_texto("success-msg") + nome[-1])
+            self.pega_texto("success-msg") + os.path.basename(novo_pdf.name))
+
