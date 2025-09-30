@@ -23,6 +23,7 @@ Os tipos de alterações
 ### Adicionado
 
 - Adicionada a funcionalidade de carregar múltiplos arquivos PDF.
+- Adicionado Sun Valley via PIP.
 - Adicionado arquivos PDFs inválidos para testes.
 - Adicionado o arquivo de licença para uso da comunidade da UFRGS e externa.
 - Adicionado o idioma espanhol.
@@ -38,13 +39,16 @@ Os tipos de alterações
 - Ajuste no README para centralizar as imagens.
 - Ajustes nos comentários do código e no README.
 - Arquivos PDFs movidos para uma pasta própria.
+- Atualizado os requisitos com `sv_ttk`.
 - Atualização do `README.md` com as instruções de uso e descrição do projeto.
 - Aumentado o tamanho máximo vertical da janela.
+- Códigos do pyinstaller atualizados em README.md.
 
 ### Removido
 
 - Arquivos desnecessários apagados.
 - Removida a opção de carregar apenas um PDF.
+- Removida a pasta de tema, agora é instalada junto com PIP.
 
 ## [v1.2.0] - 2024-11-07
 
@@ -136,4 +140,3 @@ Os tipos de alterações
 [v1.3.0]: https://github.com/ufrgs/pdf_merge/compare/v1.2.0...v1.3.0
 [v1.2.0]: https://github.com/ufrgs/pdf_merge/compare/v1.0.2...v1.2.0
 [v1.0.2]: https://github.com/ufrgs/pdf_merge/releases/tag/v1.0.2
-

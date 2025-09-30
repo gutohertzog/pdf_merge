@@ -1,6 +1,6 @@
 """ módulo principal """
 
-from .classes import Aplicativo
+from pdf_merge.classes import Aplicativo
 
 
 if __name__ == "__main__":
