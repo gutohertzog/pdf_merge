@@ -102,7 +102,7 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 
 ```bash
 ❯ pyinstaller --onefile \
-    --add-data "pdf_merge/assets/cpd-logo.jpg:assets" \
+    --add-data "pdf_merge/assets/cpd-logo.jpg:pdf_merge/assets" \
     --add-data ".venv/lib/python3.13/site-packages/sv_ttk:sv_ttk" \
     --hidden-import="PIL._tkinter_finder" \
     --noconsole \
