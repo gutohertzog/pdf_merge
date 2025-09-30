@@ -1,3 +1,3 @@
 __author__: str = "Augusto Hertzog"
 __url__: str = "https://github.com/gutohertzog/pdf_merge"
-__version__: str = "v1.2.6"
+__version__: str = "v1.3.0"

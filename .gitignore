@@ -11,3 +11,13 @@ dist/
 
 # arquivos PDFs
 *.pdf
+
+# arquvios PDFs para testes
+!pdfs/arq-ruim1.pdf
+!pdfs/arq-ruim2.pdf
+!pdfs/arq-ruim3.pdf
+!pdfs/arq1.pdf
+!pdfs/arq2.pdf
+!pdfs/arq3.pdf
+!pdfs/arq4.pdf
+

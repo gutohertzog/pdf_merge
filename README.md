@@ -1,17 +1,63 @@
 # Juntador de PDFs
 
-O objetido do projeto atual é criar uma ferramenta open-source usando Python e Tkinter onde seja possível unir dois ou mais PDFs em um arquivo.
+O Juntador de PDFs é uma ferramenta desenvolvida para que seja possível juntar, unir, agrupar Portable Document Format (PDF) em um documento.
 
+Essa solução foi pensada visando a privacidade e praticidade.
+
+Soluções online não são confiáveis porque não há como saber se uma cópia dos documentos será mantida e distribuída online.
+Soluções através de aplicativos instalados também oferecem risco pois muitos deles podem ser programas maliciosos ou programas espiões.
+
+Então o projeto atual foi criado de forma [open-source](https://pt.wikipedia.org/wiki/C%C3%B3digo_aberto) usando Python e Tkinter.
+
+<details>
+<summary>Capturas de Tela</summary>
+
+<p align="center">Selecionando Diversos Arquivos</p>
 <p align="center">
-  <img src="images/screenshot_20241107_155739.png">
+  <img src="images/1.tela-selecionando-diversos-arquivos.png">
 </p>
+<p align="center">Aviso de Arquivo(s) Corrompido(s)</p>
 <p align="center">
-  <img src="images/screenshot_20241107_155818.png">
+  <img src="images/2.tela-aviso-arquivo-corrompido.png">
 </p>
+<p align="center">Arquivos Reordenados</p>
+<p align="center">
+  <img src="images/3.tela-arquivos-reordenados.png">
+</p>
+<p align="center">Janela de Opções (Tema e Idioma)</p>
+<p align="center">
+  <img src="images/4.tela-janela-opcoes.png">
+</p>
+<p align="center">Janela de Sobre</p>
+<p align="center">
+  <img src="images/5.tela-janela-sobre.png">
+</p>
+<p align="center">Janela Aberta ao Salvar</p>
+<p align="center">
+  <img src="images/6.tela-salvamento.png">
+</p>
+<p align="center">Aviso de Arquivo Salvo com Sucesso</p>
+<p align="center">
+  <img src="images/7.tela-salvamento-completado.png">
+</p>
+
+</details>
+
+## como usar o programa
+
+Acesse a página de [Download do Juntador de PDFs](https://github.com/ufrgs/pdf_merge/releases) e baixe a versão específica de seu sistema operacional.
+
+Use o botão *Carregar* para abrir a janela e selecionar um ou mais arquivos.
+Eles irão aparecer em uma lista dentro da janela pricipal. Ao lado de cada PDF carregado haverá 3 botões :
+- `X` : para remover aquele PDF em específico;
+- `∧` : para mover o PDF para cima;
+- `∨` : para mover o PDF para baixo;
+
+Quando usar o botão *Juntar*, um novo PDF será criado seguindo a ordem dos documentos na janela principal.
 
 ## sobre o projeto
 
-Ele usa o [Python](https://www.python.org/) e a interface gráfica [tkinter](https://docs.python.org/3/library/tkinter.html) para criar a interface e tornar a fusão dos PDFs possíveis.
+Ele usa o [Python](https://www.python.org/) e a interface gráfica [tkinter](https://docs.python.org/3/library/tkinter.html) para tornar a fusão dos PDFs possível.
 
 Pacotes externos :
 - [PyPDF2](https://pypi.org/project/PyPDF2/) realiza a fusão dos arquivos PDFs;
@@ -19,9 +65,8 @@ Pacotes externos :
 - [Pillow](https://pypi.org/project/pillow/) exibe as imagens;
 - [py-window-styles](https://pypi.org/project/pywinstyles/) barra de tarefas do Windows;
 
-Temas :
-- [Sum Valley](https://pypi.org/project/sv-ttk/) tema claro ou escuro;
-- mais temas estão vindo...
+Tema :
+- [Sum Valley](https://pypi.org/project/sv-ttk/) usado para tema claro ou escuro;
 
 ## preparação
 
@@ -67,21 +112,22 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 
 ## todo
 
-- [ ] adicionar remoção individual do frame (atualmente funciona com FILO);
 - [ ] persistir alterações como tema e idioma;
+- [x] adicionar remoção individual do frame (atualmente funciona com FILO);
 - [x] adicionar idioma espanhol;
 - [x] adicionar mais idiomas (italiano e alemão);
 - [x] arrumar o tema das janelas (está apenas no widgets);
 
 ## versões
 
+- `v1.3.0` : PDFs podem ser reorganizados;
 - `v1.2.6` : verificação de PDFs corrompidos e organização;
 - `v1.2.5` : adicionado idioma espanho e removido o \_\_init\_\_.py;
-- `v1.2.4` : anotações foram adicionadas;
 
 <details>
 <summary>mais antigas</summary>
 
+- `v1.2.4` : anotações foram adicionadas;
 - `v1.2.3` : melhor comentários e organização do código;
 - `v1.2.2` : ajustes para o executável;
 - `v1.2.1` : adicionado tema manualmente por conta de alguns ajustes específicos;
@@ -95,3 +141,4 @@ Para criar o executável, é preciso executar o `pyinstaller` a partir do Termin
 - `v1.0.0` : lançada a primeira versão para Windows e Linux;
 
 </details>
+

@@ -10,13 +10,65 @@ from PIL.ImageTk import PhotoImage
 from PyPDF2 import PdfReader, PdfWriter
 from PyPDF2.errors import PdfReadError
 from tkinter import Tk, Toplevel, BOTTOM, LEFT, RIGHT, X
-from tkinter.filedialog import askopenfilename, asksaveasfile
+from tkinter.filedialog import askopenfilenames, asksaveasfile
 from tkinter.messagebox import showinfo, showwarning
 from tkinter.ttk import Button, Entry, Frame, Label, Separator
 
 from . import __url__, __version__
 from .language import IdiomaAplicativo
 from .themes import sv_ttk
+
+
+class FramePdf:
+    def __init__(self, master, app, path: str):
+        """
+        master -> container onde o frame será inserido
+        app -> referência ao Aplicativo (para acessar self.pdfs, update, etc.)
+        path -> caminho do PDF
+        """
+        self.app = app
+        self.path = path
+
+        self.frame = Frame(master)
+
+        nome_pdf = os.path.basename(path)
+        self.entry = Entry(
+            self.frame, font=("Arial", 12, "italic"), justify="center")
+        self.entry.insert(0, nome_pdf)
+        self.entry["state"] = "disabled"
+        self.entry.grid(row=0, column=2, padx=2)
+
+        # botões de controle
+        self.btn_remover = Button(self.frame, text="X", command=self.remove)
+        self.btn_remover.grid(row=0, column=3, padx=2)
+
+        self.btn_up = Button(self.frame, text="∧", command=self.move_cima)
+        self.btn_up.grid(row=0, column=0, padx=2)
+
+        self.btn_down = Button(self.frame, text="∨", command=self.move_baixo)
+        self.btn_down.grid(row=0, column=1, padx=2)
+
+    def pack(self):
+        self.frame.pack(pady=5)
+
+    def remove(self):
+        self.frame.destroy()
+        self.app.pdfs.remove(self)
+
+    def move_cima(self):
+        idx = self.app.pdfs.index(self)
+        if idx > 0:
+            self.app.pdfs[idx], self.app.pdfs[idx - 1] = \
+                    self.app.pdfs[idx - 1], self.app.pdfs[idx]
+            self.app.reordena_frames()
+
+    def move_baixo(self):
+        idx = self.app.pdfs.index(self)
+        if idx < len(self.app.pdfs) - 1:
+            self.app.pdfs[idx], self.app.pdfs[idx + 1] = \
+                    self.app.pdfs[idx + 1], self.app.pdfs[idx]
+            self.app.reordena_frames()
+
 
 class Aplicativo(Tk, IdiomaAplicativo):
     """ classe do aplicativo principal """
@@ -27,7 +79,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
         Tk.__init__(self)
         IdiomaAplicativo.__init__(self, idioma)
 
-        self.frames: list = []
         self.pdfs: list = []
         self.tipo_arq: list = [(self.pega_texto("pdf-files"), "*.pdf")]
         self.sistema: str = platform.system()
@@ -47,7 +98,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
         if self.sistema == "Windows":
             icone_path: str = self.caminho_arquivo("assets", "ufrgs.ico")
             self.iconbitmap(icone_path)
-        self.maxsize(480, 640)
+        self.maxsize(480, 900)
         self.minsize(480, 360)
 
     def caminho_arquivo(self, pasta: str, nome_arquivo: str) -> str:
@@ -97,9 +148,6 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.btn_novo_pdf: Button = Button(
             frm_botoes, command=self.cria_frame)
         self.btn_novo_pdf.pack(side=LEFT, padx=10)
-        self.btn_remove_pdf: Button = Button(
-            frm_botoes, command=self.apaga_frame)
-        self.btn_remove_pdf.pack(side=LEFT, padx=10)
         self.btn_limpar: Button = Button(
             frm_botoes, command=self.limpar_pdfs)
         self.btn_limpar.pack(side=LEFT, padx=10)
@@ -145,7 +193,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
         self.lbl_titulo["text"] = self.pega_texto("title")
         self.btn_juntar["text"] = self.pega_texto("merge")
         self.btn_novo_pdf["text"] = self.pega_texto("load")
-        self.btn_remove_pdf["text"] = self.pega_texto("remove")
+        # self.btn_remove_pdf["text"] = self.pega_texto("remove")
         self.btn_limpar["text"] = self.pega_texto("clear")
 
         # variáveis
@@ -284,46 +332,56 @@ class Aplicativo(Tk, IdiomaAplicativo):
         # necessário para mostrar as imagens
         janela_sobre.wait_window(janela_sobre)
 
-    def apaga_frame(self) -> None:
-        """ função para apagar o último frame da pilha;
-        até o momento, funciona como FILO """
-        if self.frames:
-            para_apagar = self.frames.pop()
-            self.pdfs.pop()
-            para_apagar.destroy()
-            self.update()
-
     def limpar_pdfs(self) -> None:
         """ remove todos os PDFs adicionados """
-        for frame in self.frames:
-            frame.destroy()
-        self.frames: list = []
-        self.pdfs: list = []
-        self.update()
+        print(self.pdfs)
+        for pdf in self.pdfs[::-1]:
+            pdf.remove()
+
+    def msg_corrompidos(self, invalidos: list[str]):
+        """ mostra a janela de aviso para os arquivos inválidos """
+        titulo: str = self.pega_texto("warning")
+        if len(invalidos) == 1:
+            corpo: str = self.pega_texto("corrupted-file")
+        else:
+            corpo: str = self.pega_texto("corrupted-files")
+
+        for invalido in invalidos:
+            corpo += f"\n  - {os.path.basename(invalido)}"
+
+        showwarning(titulo, corpo)
+
+    def reordena_frames(self):
+        """ remove todos os frames e depois os readiciona na nova ordem """
+        for f in self.pdfs:
+            f.frame.pack_forget()
+        for f in self.pdfs:
+            f.pack()
 
     def cria_frame(self) -> None:
         """ abre a janela para carregar novo PDF e adcionar um novo frame """
-        arq_path: str = askopenfilename(
+        arqs_path: tuple[str] = askopenfilenames(
                 title=self.pega_texto("select"),
                 filetypes=self.tipo_arq)
 
-        if arq_path:
-            if not self.valida_pdf(arq_path):
-                showwarning(
-                    self.pega_texto("warning"),
-                    self.pega_texto("corrupted-file"))
-                return
-            frm_novo: Frame = Frame(self.frm_main)
-            self.pdfs.append(arq_path)
-            arq: str = arq_path.split("/")[-1]
-            ent_arq:Entry = Entry(
-                frm_novo, font=("Arial", 12), justify="center")
-            ent_arq.insert(0, arq)
-            ent_arq["state"] = "disabled"
-            ent_arq.grid(row=0, column=0)
-            frm_novo.pack(pady=5)
+        if not arqs_path:
+            return
 
-            self.frames.append(frm_novo)
+        arqs_validos: list[str] = []
+        arqs_invalidos: list[str] = []
+        for arq_path in arqs_path:
+            if self.valida_pdf(arq_path):
+                arqs_validos.append(arq_path)
+            else:
+                arqs_invalidos.append(arq_path)
+
+        if arqs_invalidos:
+            self.msg_corrompidos(arqs_invalidos)
+
+        for arq_valido in arqs_validos:
+            frame_pdf = FramePdf(self.frm_main, self, arq_valido)
+            self.pdfs.append(frame_pdf)
+            frame_pdf.pack()
 
     def valida_pdf(self, arq_path: str) -> bool:
         """ testa se é um PDF válido """
@@ -351,10 +409,9 @@ class Aplicativo(Tk, IdiomaAplicativo):
             return
 
         pdf_escritor: PdfWriter = PdfWriter()
-        for pdf in self.pdfs:
-            with open(pdf, "rb") as arq:
+        for frame_pdf in self.pdfs:
+            with open(frame_pdf.path, "rb") as arq:
                 pdf_leitor: PdfReader = PdfReader(arq)
-
                 for pagina in pdf_leitor.pages:
                     pdf_escritor.add_page(pagina)
 
@@ -370,7 +427,7 @@ class Aplicativo(Tk, IdiomaAplicativo):
         with open(novo_pdf.name, "wb") as arq:
             pdf_escritor.write(arq)
 
-        nome: str = novo_pdf.name.split("/")
         showinfo(
             self.pega_texto("success"),
-            self.pega_texto("success-msg") + nome[-1])
+            self.pega_texto("success-msg") + os.path.basename(novo_pdf.name))
+
